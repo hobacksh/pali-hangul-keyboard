@@ -1,0 +1,278 @@
+SplineFontDB: 3.2
+FontName: PaliHangul-Regular
+FullName: PaliHangul Regular
+FamilyName: PaliHangul
+Weight: Regular
+Copyright: Copyright (c) 2026 JB Park. Licensed under SIL Open Font License 1.1
+UComments: "2026-2-12: Created with FontForge (http://fontforge.org)"
+Version: 0.1.0
+ItalicAngle: 0
+UnderlinePosition: -100
+UnderlineWidth: 50
+Ascent: 800
+Descent: 200
+InvalidEm: 0
+LayerCount: 2
+Layer: 0 0 "+tLe6dAAA" 1
+Layer: 1 0 "+xV66dAAA" 0
+XUID: [1021 392 -1166458741 8107123]
+OS2Version: 0
+OS2_WeightWidthSlopeOnly: 0
+OS2_UseTypoMetrics: 1
+CreationTime: 1770876691
+ModificationTime: 1770876691
+OS2TypoAscent: 0
+OS2TypoAOffset: 1
+OS2TypoDescent: 0
+OS2TypoDOffset: 1
+OS2TypoLinegap: 0
+OS2WinAscent: 0
+OS2WinAOffset: 1
+OS2WinDescent: 0
+OS2WinDOffset: 1
+HheadAscent: 0
+HheadAOffset: 1
+HheadDescent: 0
+HheadDOffset: 1
+OS2Vendor: 'PfEd'
+Lookup: 260 0 0 "mark" { "mark-subtable"  } ['mark' ('DFLT' <'dflt' > ) ]
+DEI: 91125
+Encoding: ISO8859-1
+UnicodeInterp: none
+NameList: AGL For New Fonts
+DisplaySize: -48
+AntiAlias: 1
+FitToEm: 0
+BeginChars: 270 14
+
+StartChar: "+rAAA"
+Encoding: 256 44032 0
+Width: 1000
+VWidth: 0
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+100 0 m 0
+ 900 0 l 0
+ 900 700 l 0
+ 100 700 l 0
+ 100 0 l 0
+EndSplineSet
+EndChar
+
+StartChar: "+sJgA"
+Encoding: 257 45208 1
+Width: 1000
+VWidth: 0
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+100 0 m 0
+ 900 0 l 0
+ 900 700 l 0
+ 100 700 l 0
+ 100 0 l 0
+EndSplineSet
+EndChar
+
+StartChar: "+suQA"
+Encoding: 258 45796 2
+Width: 1000
+VWidth: 0
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+100 0 m 0
+ 900 0 l 0
+ 900 700 l 0
+ 100 700 l 0
+ 100 0 l 0
+EndSplineSet
+EndChar
+
+StartChar: "+t3wA"
+Encoding: 259 46972 3
+Width: 1000
+VWidth: 0
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+100 0 m 0
+ 900 0 l 0
+ 900 700 l 0
+ 100 700 l 0
+ 100 0 l 0
+EndSplineSet
+EndChar
+
+StartChar: "+ucgA"
+Encoding: 260 47560 4
+Width: 1000
+VWidth: 0
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+100 0 m 0
+ 900 0 l 0
+ 900 700 l 0
+ 100 700 l 0
+ 100 0 l 0
+EndSplineSet
+EndChar
+
+StartChar: "+vBQA"
+Encoding: 261 48148 5
+Width: 1000
+VWidth: 0
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+100 0 m 0
+ 900 0 l 0
+ 900 700 l 0
+ 100 700 l 0
+ 100 0 l 0
+EndSplineSet
+EndChar
+
+StartChar: "+wKwA"
+Encoding: 262 49324 6
+Width: 1000
+VWidth: 0
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+100 0 m 0
+ 900 0 l 0
+ 900 700 l 0
+ 100 700 l 0
+ 100 0 l 0
+EndSplineSet
+EndChar
+
+StartChar: "+xUQA"
+Encoding: 263 50500 7
+Width: 1000
+VWidth: 0
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+100 0 m 0
+ 900 0 l 0
+ 900 700 l 0
+ 100 700 l 0
+ 100 0 l 0
+EndSplineSet
+EndChar
+
+StartChar: "+x5AA"
+Encoding: 264 51088 8
+Width: 1000
+VWidth: 0
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+100 0 m 0
+ 900 0 l 0
+ 900 700 l 0
+ 100 700 l 0
+ 100 0 l 0
+EndSplineSet
+EndChar
+
+StartChar: "+znQA"
+Encoding: 265 52852 9
+Width: 1000
+VWidth: 0
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+100 0 m 0
+ 900 0 l 0
+ 900 700 l 0
+ 100 700 l 0
+ 100 0 l 0
+EndSplineSet
+EndChar
+
+StartChar: combiningsupplementtop
+Encoding: 266 7623 10
+Width: 0
+VWidth: 0
+GlyphClass: 4
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+400 750 m 0
+ 600 750 l 0
+ 600 780 l 0
+ 400 780 l 0
+ 400 750 l 0
+EndSplineSet
+EndChar
+
+StartChar: ideographicenteringtonemark
+Encoding: 267 12332 11
+Width: 0
+VWidth: 0
+GlyphClass: 4
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+500 820 m 0
+ 520 820 l 0
+ 520 840 l 0
+ 500 840 l 0
+ 500 820 l 0
+EndSplineSet
+EndChar
+
+StartChar: ideographicleavingtonemark
+Encoding: 268 12333 12
+Width: 0
+VWidth: 0
+GlyphClass: 4
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+500 -80 m 0
+ 520 -80 l 0
+ 520 -60 l 0
+ 500 -60 l 0
+ 500 -80 l 0
+EndSplineSet
+EndChar
+
+StartChar: combininginverteddoublearc
+Encoding: 269 811 13
+Width: 0
+VWidth: 0
+GlyphClass: 4
+Flags: HW
+LayerCount: 2
+Fore
+SplineSet
+300 -120 m 0
+ 500 -140 l 0
+ 700 -120 l 0
+ 700 -110 l 0
+ 500 -130 l 0
+ 300 -110 l 0
+ 300 -120 l 0
+EndSplineSet
+EndChar
+EndChars
+EndSplineFont
