@@ -20,7 +20,7 @@ OS2Version: 0
 OS2_WeightWidthSlopeOnly: 0
 OS2_UseTypoMetrics: 1
 CreationTime: 1770876691
-ModificationTime: 1770876691
+ModificationTime: 1770876944
 OS2TypoAscent: 0
 OS2TypoAOffset: 1
 OS2TypoDescent: 0
@@ -48,160 +48,190 @@ BeginChars: 270 14
 StartChar: "+rAAA"
 Encoding: 256 44032 0
 Width: 1000
-VWidth: 0
 Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-100 0 m 0
- 900 0 l 0
- 900 700 l 0
- 100 700 l 0
- 100 0 l 0
+100 50 m 0
+ 100 0 100 0 150 0 c 0
+ 850 0 l 0
+ 900 0 900 0 900 50 c 0
+ 900 650 l 0
+ 900 700 900 700 850 700 c 0
+ 150 700 l 0
+ 100 700 100 700 100 650 c 0
+ 100 50 l 0
 EndSplineSet
 EndChar
 
 StartChar: "+sJgA"
 Encoding: 257 45208 1
 Width: 1000
-VWidth: 0
 Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-100 0 m 0
- 900 0 l 0
- 900 700 l 0
- 100 700 l 0
- 100 0 l 0
+100 50 m 0
+ 100 0 100 0 150 0 c 0
+ 850 0 l 0
+ 900 0 900 0 900 50 c 0
+ 900 650 l 0
+ 900 700 900 700 850 700 c 0
+ 150 700 l 0
+ 100 700 100 700 100 650 c 0
+ 100 50 l 0
 EndSplineSet
 EndChar
 
 StartChar: "+suQA"
 Encoding: 258 45796 2
 Width: 1000
-VWidth: 0
 Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-100 0 m 0
- 900 0 l 0
- 900 700 l 0
- 100 700 l 0
- 100 0 l 0
+100 50 m 0
+ 100 0 100 0 150 0 c 0
+ 850 0 l 0
+ 900 0 900 0 900 50 c 0
+ 900 650 l 0
+ 900 700 900 700 850 700 c 0
+ 150 700 l 0
+ 100 700 100 700 100 650 c 0
+ 100 50 l 0
 EndSplineSet
 EndChar
 
 StartChar: "+t3wA"
 Encoding: 259 46972 3
 Width: 1000
-VWidth: 0
 Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-100 0 m 0
- 900 0 l 0
- 900 700 l 0
- 100 700 l 0
- 100 0 l 0
+100 50 m 0
+ 100 0 100 0 150 0 c 0
+ 850 0 l 0
+ 900 0 900 0 900 50 c 0
+ 900 650 l 0
+ 900 700 900 700 850 700 c 0
+ 150 700 l 0
+ 100 700 100 700 100 650 c 0
+ 100 50 l 0
 EndSplineSet
 EndChar
 
 StartChar: "+ucgA"
 Encoding: 260 47560 4
 Width: 1000
-VWidth: 0
 Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-100 0 m 0
- 900 0 l 0
- 900 700 l 0
- 100 700 l 0
- 100 0 l 0
+100 50 m 0
+ 100 0 100 0 150 0 c 0
+ 850 0 l 0
+ 900 0 900 0 900 50 c 0
+ 900 650 l 0
+ 900 700 900 700 850 700 c 0
+ 150 700 l 0
+ 100 700 100 700 100 650 c 0
+ 100 50 l 0
 EndSplineSet
 EndChar
 
 StartChar: "+vBQA"
 Encoding: 261 48148 5
 Width: 1000
-VWidth: 0
 Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-100 0 m 0
- 900 0 l 0
- 900 700 l 0
- 100 700 l 0
- 100 0 l 0
+100 50 m 0
+ 100 0 100 0 150 0 c 0
+ 850 0 l 0
+ 900 0 900 0 900 50 c 0
+ 900 650 l 0
+ 900 700 900 700 850 700 c 0
+ 150 700 l 0
+ 100 700 100 700 100 650 c 0
+ 100 50 l 0
 EndSplineSet
 EndChar
 
 StartChar: "+wKwA"
 Encoding: 262 49324 6
 Width: 1000
-VWidth: 0
 Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-100 0 m 0
- 900 0 l 0
- 900 700 l 0
- 100 700 l 0
- 100 0 l 0
+100 50 m 0
+ 100 0 100 0 150 0 c 0
+ 850 0 l 0
+ 900 0 900 0 900 50 c 0
+ 900 650 l 0
+ 900 700 900 700 850 700 c 0
+ 150 700 l 0
+ 100 700 100 700 100 650 c 0
+ 100 50 l 0
 EndSplineSet
 EndChar
 
 StartChar: "+xUQA"
 Encoding: 263 50500 7
 Width: 1000
-VWidth: 0
 Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-100 0 m 0
- 900 0 l 0
- 900 700 l 0
- 100 700 l 0
- 100 0 l 0
+100 50 m 0
+ 100 0 100 0 150 0 c 0
+ 850 0 l 0
+ 900 0 900 0 900 50 c 0
+ 900 650 l 0
+ 900 700 900 700 850 700 c 0
+ 150 700 l 0
+ 100 700 100 700 100 650 c 0
+ 100 50 l 0
 EndSplineSet
 EndChar
 
 StartChar: "+x5AA"
 Encoding: 264 51088 8
 Width: 1000
-VWidth: 0
 Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-100 0 m 0
- 900 0 l 0
- 900 700 l 0
- 100 700 l 0
- 100 0 l 0
+100 50 m 0
+ 100 0 100 0 150 0 c 0
+ 850 0 l 0
+ 900 0 900 0 900 50 c 0
+ 900 650 l 0
+ 900 700 900 700 850 700 c 0
+ 150 700 l 0
+ 100 700 100 700 100 650 c 0
+ 100 50 l 0
 EndSplineSet
 EndChar
 
 StartChar: "+znQA"
 Encoding: 265 52852 9
 Width: 1000
-VWidth: 0
 Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-100 0 m 0
- 900 0 l 0
- 900 700 l 0
- 100 700 l 0
- 100 0 l 0
+100 50 m 0
+ 100 0 100 0 150 0 c 0
+ 850 0 l 0
+ 900 0 900 0 900 50 c 0
+ 900 650 l 0
+ 900 700 900 700 850 700 c 0
+ 150 700 l 0
+ 100 700 100 700 100 650 c 0
+ 100 50 l 0
 EndSplineSet
 EndChar
 
@@ -214,11 +244,13 @@ Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-400 750 m 0
- 600 750 l 0
- 600 780 l 0
- 400 780 l 0
- 400 750 l 0
+450 770 m 0
+ 550 770 l 0
+ 570 770 580 775 580 785 c 0
+ 580 795 570 800 550 800 c 0
+ 450 800 l 0
+ 430 800 420 795 420 785 c 0
+ 420 775 430 770 450 770 c 0
 EndSplineSet
 EndChar
 
@@ -231,11 +263,11 @@ Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-500 820 m 0
- 520 820 l 0
- 520 840 l 0
- 500 840 l 0
- 500 820 l 0
+500 855 m 0
+ 519.329966243 855 535 839.329966243 535 820 c 0
+ 535 800.670033757 519.329966243 785 500 785 c 0
+ 480.670033757 785 465 800.670033757 465 820 c 0
+ 465 839.329966243 480.670033757 855 500 855 c 0
 EndSplineSet
 EndChar
 
@@ -248,11 +280,11 @@ Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-500 -80 m 0
- 520 -80 l 0
- 520 -60 l 0
- 500 -60 l 0
- 500 -80 l 0
+500 -35 m 0
+ 519.329966243 -35 535 -50.670033757 535 -70 c 0
+ 535 -89.329966243 519.329966243 -105 500 -105 c 0
+ 480.670033757 -105 465 -89.329966243 465 -70 c 0
+ 465 -50.670033757 480.670033757 -35 500 -35 c 0
 EndSplineSet
 EndChar
 
@@ -265,13 +297,17 @@ Flags: HW
 LayerCount: 2
 Fore
 SplineSet
-300 -120 m 0
- 500 -140 l 0
- 700 -120 l 0
- 700 -110 l 0
- 500 -130 l 0
+300 -110 m 0
+ 350 -90 400 -85 450 -95 c 0
+ 470 -100 480 -100 500 -100 c 0
+ 520 -100 530 -100 550 -95 c 0
+ 600 -85 650 -90 700 -110 c 0
+ 700 -125 l 0
+ 650 -105 600 -100 550 -110 c 0
+ 530 -115 520 -115 500 -115 c 0
+ 480 -115 470 -115 450 -110 c 0
+ 400 -100 350 -105 300 -125 c 0
  300 -110 l 0
- 300 -120 l 0
 EndSplineSet
 EndChar
 EndChars
