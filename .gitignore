@@ -1,0 +1,67 @@
+# .gitignore
+
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Xcode
+*.xcodeproj
+*.xcworkspace
+DerivedData/
+*.pbxuser
+*.mode1v3
+*.mode2v3
+*.perspectivev3
+*.xcuserstate
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+*.cab
+*.msi
+*.msix
+*.msm
+*.msp
+*.lnk
+
+# IME Build Artifacts
+*.o
+*.obj
+*.dll
+*.exe
+*.app
+*.bundle
+*.framework
+build/
+dist/
+
+# Font Development
+*.vfb
+*.sfd.bak
+.fontlab/
+*.ufo/*.glif~
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Node (if using web preview)
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Rust (if using)
+target/
+Cargo.lock
+
+# Temporary files
+tmp/
+temp/
+*.log
