@@ -31,7 +31,7 @@ async function load(){
  })
 }
 function collect(){const p={}; rows.forEach(([id])=>p[id]={x:+document.getElementById(id+'_x').value,y:+document.getElementById(id+'_y').value,width:+document.getElementById(id+'_w').value,height:+document.getElementById(id+'_h').value}); return p}
-async function saveParams(){const r=await fetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(collect())}); const j=await r.json(); document.getElementById('msg').textContent=j.ok?'저장됨':'저장실패'}
+async function saveParams(){const r=await fetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(collect())}); const j=await r.json(); document.getElementById('msg').textContent=j.ok?'저장됨 (가상 미리보기 반영)':'저장실패'; if(j.ok){document.getElementById('pv').src='./web_ga_series_preview_v288.html?t='+(Date.now())}}
 async function applyFont(){document.getElementById('msg').textContent='적용중...'; await saveParams(); const r=await fetch('/apply',{method:'POST'}); const j=await r.json(); document.getElementById('msg').textContent=j.ok?'폰트 반영 완료':'반영 실패'; document.getElementById('pv').src='./web_ga_series_preview_v288.html?t='+(Date.now())}
 load();
 </script>
