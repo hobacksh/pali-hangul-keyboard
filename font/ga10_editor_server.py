@@ -33,7 +33,9 @@ class H(SimpleHTTPRequestHandler):
                 return self._json({'ok':False,'error':str(e)},500)
         if self.path=='/apply':
             try:
-                r=subprocess.run(['python3',BUILD],cwd=ROOT,capture_output=True,text=True,timeout=180)
+                env = os.environ.copy()
+                env['OC_BUILD_TAG'] = str(int(__import__('time').time()))
+                r=subprocess.run(['python3',BUILD],cwd=ROOT,capture_output=True,text=True,timeout=180,env=env)
                 if r.returncode!=0:
                     return self._json({'ok':False,'error':r.stderr[-1200:],'out':r.stdout[-400:]},500)
                 if os.path.exists(FONT_OUT):

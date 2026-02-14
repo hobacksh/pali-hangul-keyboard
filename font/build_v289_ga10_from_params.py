@@ -113,10 +113,11 @@ lig_single(CP['kkang'], TRI_BELOW, P['id9_tri'])
 # 10) 낀+아랫물결
 lig_single(CP['kkin'], TILDE_BELOW, P['id10_tilde'])
 
-font.fontname='PaliHangulV289Ga10Editor'
-font.familyname='PaliHangul V289 Ga10 Editor'
-font.fullname='PaliHangul V289 Ga10 Editor'
-font.version='2.89-ga10-editor'
+tag = os.environ.get('OC_BUILD_TAG', 'base')
+font.fontname=f'PaliHangulV289Ga10Editor_{tag}'
+font.familyname=f'PaliHangul V289 Ga10 Editor {tag}'
+font.fullname=f'PaliHangul V289 Ga10 Editor {tag}'
+font.version=f'2.89-ga10-editor-{tag}'
 font.generate(OUT)
 font.close()
 print('Generated', OUT)
