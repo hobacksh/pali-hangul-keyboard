@@ -105,8 +105,8 @@ def lig_combo(base_cp, p_top, p_mac):
     b=font[base_cp]
     g=newg()
     draw_ring_abs(g, p_top['x'], p_top['y'], _dim(p_top.get('width', 100)), _dim(p_top.get('height', 100)))
-    # macron width is absolute; apply legacy 1.5x feel by defaulting larger base width in params if needed
-    add_ref_abs(g, MACRON, p_mac['x'], p_mac['y'], _dim(p_mac.get('width', 100))*1.5, _dim(p_mac.get('height', 100)))
+    # macron size uses absolute values directly from editor params
+    add_ref_abs(g, MACRON, p_mac['x'], p_mac['y'], _dim(p_mac.get('width', 100)), _dim(p_mac.get('height', 100)))
     g.addReference(b.glyphname); g.width=b.width
     g.addPosSub(sub,(b.glyphname,font[RING_ABOVE].glyphname,font[MACRON].glyphname))
     g.addPosSub(sub,(b.glyphname,font[MACRON].glyphname,font[RING_ABOVE].glyphname))
