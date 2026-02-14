@@ -4,9 +4,9 @@ from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 
 ROOT = os.path.dirname(__file__)
 PARAMS = os.path.join(ROOT, 'ga10_editor_params.json')
-BUILD = os.path.join(ROOT, 'build_v288_ga10_from_params.py')
-FONT_OUT = os.path.expanduser('~/Library/Fonts/PaliHangulV288_Ga10Editor.otf')
-FONT_COPY = os.path.join(ROOT, 'PaliHangulV288_Ga10Editor.otf')
+BUILD = os.path.join(ROOT, 'build_v289_ga10_from_params.py')
+FONT_OUT = os.path.expanduser('~/Library/Fonts/PaliHangulV289_Ga10Editor.otf')
+FONT_COPY = os.path.join(ROOT, 'PaliHangulV289_Ga10Editor.otf')
 
 class H(SimpleHTTPRequestHandler):
     def _json(self, obj, code=200):

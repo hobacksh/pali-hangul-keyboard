@@ -1,24 +1,36 @@
 <!doctype html><html><head><meta charset='utf-8'><title>Ga10 Editor</title>
 <style>body{font-family:sans-serif;margin:16px} table{border-collapse:collapse} td,th{border:1px solid #ddd;padding:6px} input{width:76px} button{margin-right:8px} iframe{width:100%;height:760px;border:1px solid #ddd;margin-top:12px}</style>
 </head><body>
-<h2>가계열 10개 좌표 편집기</h2>
+<h2>가계열 10개 좌표 편집기 (기호별 분리)</h2>
 <div>
 <button onclick='saveParams()'>저장</button>
 <button onclick='applyFont()'>저장 + 폰트 반영</button>
 <span id='msg'></span>
 </div>
-<table id='tbl'><thead><tr><th>ID</th><th>x</th><th>y</th><th>width(%)</th><th>height(%)</th></tr></thead><tbody></tbody></table>
+<table id='tbl'><thead><tr><th>ID</th><th>설명</th><th>x</th><th>y</th><th>width(%)</th><th>height(%)</th></tr></thead><tbody></tbody></table>
 <iframe id='pv' src='./web_ga_series_preview_v288.html'></iframe>
 <script>
-const ids=[...Array(10)].map((_,i)=>'id'+(i+1));
+const rows=[
+ ['id1_mac','1) 가+장음 (mac)'],
+ ['id2_top','2) 가+윗점+장음 (top)'],
+ ['id2_mac','2) 가+윗점+장음 (mac)'],
+ ['id3_top','3) 가+윗점'],
+ ['id4_bot','4) 간+아랫점'],
+ ['id5_top','5) 강+윗점'],
+ ['id6_tri','6) 강+아랫역삼각형'],
+ ['id7_mac','7) 까+장음'],
+ ['id8_tilde','8) 깐+아랫물결'],
+ ['id9_tri','9) 깡+아랫역삼각형'],
+ ['id10_tilde','10) 낀+아랫물결']
+];
 async function load(){
  const r=await fetch('/params'); const p=await r.json();
  const tb=document.querySelector('#tbl tbody'); tb.innerHTML='';
- ids.forEach(id=>{const v=p[id]||{x:0,y:0,width:100,height:100};
-  tb.insertAdjacentHTML('beforeend',`<tr><td>${id}</td><td><input id='${id}_x' value='${v.x}'></td><td><input id='${id}_y' value='${v.y}'></td><td><input id='${id}_w' value='${v.width}'></td><td><input id='${id}_h' value='${v.height}'></td></tr>`)
+ rows.forEach(([id,label])=>{const v=p[id]||{x:0,y:0,width:100,height:100};
+  tb.insertAdjacentHTML('beforeend',`<tr><td>${id}</td><td>${label}</td><td><input id='${id}_x' value='${v.x}'></td><td><input id='${id}_y' value='${v.y}'></td><td><input id='${id}_w' value='${v.width}'></td><td><input id='${id}_h' value='${v.height}'></td></tr>`)
  })
 }
-function collect(){const p={}; ids.forEach(id=>p[id]={x:+document.getElementById(id+'_x').value,y:+document.getElementById(id+'_y').value,width:+document.getElementById(id+'_w').value,height:+document.getElementById(id+'_h').value}); return p}
+function collect(){const p={}; rows.forEach(([id])=>p[id]={x:+document.getElementById(id+'_x').value,y:+document.getElementById(id+'_y').value,width:+document.getElementById(id+'_w').value,height:+document.getElementById(id+'_h').value}); return p}
 async function saveParams(){const r=await fetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(collect())}); const j=await r.json(); document.getElementById('msg').textContent=j.ok?'저장됨':'저장실패'}
 async function applyFont(){document.getElementById('msg').textContent='적용중...'; await saveParams(); const r=await fetch('/apply',{method:'POST'}); const j=await r.json(); document.getElementById('msg').textContent=j.ok?'폰트 반영 완료':'반영 실패'; document.getElementById('pv').src='./web_ga_series_preview_v288.html?t='+(Date.now())}
 load();

@@ -1,12 +1,13 @@
 {
-  "id1": {"x": 386, "y": 805, "width": 100, "height": 100},
-  "id2": {"x": 170, "y": 785, "width": 100, "height": 100},
-  "id3": {"x": 170, "y": 785, "width": 100, "height": 100},
-  "id4": {"x": 605, "y": -135, "width": 100, "height": 100},
-  "id5": {"x": 155, "y": 806, "width": 100, "height": 100},
-  "id6": {"x": 817, "y": -158, "width": 100, "height": 100},
-  "id7": {"x": 386, "y": 805, "width": 100, "height": 100},
-  "id8": {"x": 643, "y": -135, "width": 100, "height": 100},
-  "id9": {"x": 831, "y": -159, "width": 100, "height": 100},
-  "id10": {"x": 638, "y": -135, "width": 100, "height": 100}
+  "id1_mac": {"x": 386, "y": 805, "width": 100, "height": 100},
+  "id2_top": {"x": 170, "y": 785, "width": 100, "height": 100},
+  "id2_mac": {"x": 386, "y": 815, "width": 100, "height": 100},
+  "id3_top": {"x": 170, "y": 785, "width": 100, "height": 100},
+  "id4_bot": {"x": 605, "y": -135, "width": 100, "height": 100},
+  "id5_top": {"x": 155, "y": 806, "width": 100, "height": 100},
+  "id6_tri": {"x": 817, "y": -158, "width": 100, "height": 100},
+  "id7_mac": {"x": 386, "y": 805, "width": 100, "height": 100},
+  "id8_tilde": {"x": 643, "y": -135, "width": 100, "height": 100},
+  "id9_tri": {"x": 831, "y": -159, "width": 100, "height": 100},
+  "id10_tilde": {"x": 638, "y": -135, "width": 100, "height": 100}
 }
