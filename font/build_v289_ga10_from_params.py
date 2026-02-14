@@ -137,7 +137,7 @@ lig_single('냣', BOT_TILDE, 'na14_tilde')
 lig_single('냥', BOT_TILDE, 'na15_tilde')
 lig_combo2('누', BOT_DOT, 'na16_top', MACRON, 'na16_mac')
 lig_single('니', BOT_DOT, 'na17_top')
-lig_single('네', TOP, 'na18_top')             # 18번만 윗점 유지
+lig_single('네', BOT_DOT, 'na18_top')         # 18번 아랫점으로 변경
 
 tag = os.environ.get('OC_BUILD_TAG', 'base')
 font.fontname=f'PaliHangulV289Ga10Editor_{tag}'
