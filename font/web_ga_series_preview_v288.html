@@ -1,46 +1,22 @@
 <!doctype html><meta charset='utf-8'>
-<style>
-@font-face{font-family:PH;src:url('./PaliHangulV289_Ga10Editor.otf') format('opentype')}
-body{font-family:PH,serif;margin:20px}
-.r{font-size:72px;line-height:1.5;position:relative;height:106px}
-.lab{font-family:sans-serif;font-size:14px;color:#666;display:inline-block;width:250px}
-.base{display:inline-block;position:relative}
-.mk{position:absolute;pointer-events:none}
-.note{font-family:sans-serif;color:#666;margin:6px 0 14px}
-</style>
-<div class='note'>가상 미리보기(저장 시 즉시 반영)</div>
-<div id='root'></div>
 <script>
-const rows=[
- {id:'id1_mac', label:'1) 가+장음', base:'가', marks:[['mac','id1_mac']]},
- {id:'id2', label:'2) 가+윗점+장음', base:'가', marks:[['top','id2_top'],['mac','id2_mac']]},
- {id:'id3_top', label:'3) 가+윗점', base:'가', marks:[['top','id3_top']]},
- {id:'id4_bot', label:'4) 간+아랫점', base:'간', marks:[['botdot','id4_bot']]},
- {id:'id5_top', label:'5) 강+윗점', base:'강', marks:[['top','id5_top']]},
- {id:'id6_tri', label:'6) 강+아랫역삼각형', base:'강', marks:[['tri','id6_tri']]},
- {id:'id7_mac', label:'7) 까+장음', base:'까', marks:[['mac','id7_mac']]},
- {id:'id8_tilde', label:'8) 깐+아랫물결', base:'깐', marks:[['tilde','id8_tilde']]},
- {id:'id9_tri', label:'9) 깡+아랫역삼각형', base:'깡', marks:[['tri','id9_tri']]},
- {id:'id10_tilde', label:'10) 낀+아랫물결', base:'낀', marks:[['tilde','id10_tilde']]},
-];
-const glyph={mac:'︠',top:'◌̊',botdot:'◌̥',tilde:'◌̰',tri:'ˑ'};
-function mkSpan(kind,p){
- const s=document.createElement('span'); s.className='mk';
- s.textContent=(kind==='top'?'◌̊':kind==='botdot'?'◌̥':kind==='tilde'?'◌̰':kind==='tri'?'ˑ':'︠');
- s.style.left=(p.x/10)+'px'; s.style.top=(-p.y/10)+'px';
- s.style.transform=`translate(-50%,-50%) scale(${(p.width||100)/100},${(p.height||100)/100})`;
- return s;
-}
-async function render(){
- const p=await (await fetch('/params')).json();
- const root=document.getElementById('root'); root.innerHTML='';
- rows.forEach(r=>{
-   const row=document.createElement('div'); row.className='r';
-   const lab=document.createElement('span'); lab.className='lab'; lab.textContent=r.label;
-   const base=document.createElement('span'); base.className='base'; base.textContent=r.base;
-   r.marks.forEach(([k,id])=>{ if(p[id]) base.appendChild(mkSpan(k,p[id])); });
-   row.appendChild(lab); row.appendChild(base); root.appendChild(row);
- });
-}
-render();
+const t = new URLSearchParams(location.search).get('t') || Date.now().toString();
+const st = document.createElement('style');
+st.textContent = `
+@font-face{font-family:PH;src:url('./PaliHangulV289_Ga10Editor.otf?t=${t}') format('opentype')}
+body{font-family:PH,serif;margin:24px}
+.r{font-size:72px;line-height:1.45}
+.lab{font-family:sans-serif;font-size:14px;color:#666;display:inline-block;width:250px}
+`;
+document.head.appendChild(st);
 </script>
+<div class='r'><span class='lab'>1) 가+장음</span>가︠</div>
+<div class='r'><span class='lab'>2) 가+윗점+장음</span>가̊︠</div>
+<div class='r'><span class='lab'>3) 가+윗점</span>가̊</div>
+<div class='r'><span class='lab'>4) 간+아랫점</span>간̥</div>
+<div class='r'><span class='lab'>5) 강+윗점</span>강̊</div>
+<div class='r'><span class='lab'>6) 강+아랫역삼각형</span>강ˑ</div>
+<div class='r'><span class='lab'>7) 까+장음</span>까︠</div>
+<div class='r'><span class='lab'>8) 깐+아랫물결</span>깐̰</div>
+<div class='r'><span class='lab'>9) 깡+아랫역삼각형</span>깡ˑ</div>
+<div class='r'><span class='lab'>10) 낀+아랫물결</span>낀̰</div>

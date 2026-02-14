@@ -1,9 +1,8 @@
 <!doctype html><html><head><meta charset='utf-8'><title>Ga10 Editor</title>
 <style>body{font-family:sans-serif;margin:16px} table{border-collapse:collapse} td,th{border:1px solid #ddd;padding:6px} input{width:76px} button{margin-right:8px} iframe{width:100%;height:760px;border:1px solid #ddd;margin-top:12px}</style>
 </head><body>
-<h2>가계열 10개 좌표 편집기 (기호별 분리)</h2>
+<h2>가계열 10개 좌표 편집기 (실폰트 반영만)</h2>
 <div>
-<button onclick='saveParams()'>저장</button>
 <button onclick='applyFont()'>저장 + 폰트 반영</button>
 <span id='msg'></span>
 </div>
@@ -31,8 +30,8 @@ async function load(){
  })
 }
 function collect(){const p={}; rows.forEach(([id])=>p[id]={x:+document.getElementById(id+'_x').value,y:+document.getElementById(id+'_y').value,width:+document.getElementById(id+'_w').value,height:+document.getElementById(id+'_h').value}); return p}
-async function saveParams(){const r=await fetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(collect())}); const j=await r.json(); document.getElementById('msg').textContent=j.ok?'저장됨 (가상 미리보기 반영)':'저장실패'; if(j.ok){document.getElementById('pv').src='./web_ga_series_preview_v288.html?t='+(Date.now())}}
-async function applyFont(){document.getElementById('msg').textContent='적용중...'; await saveParams(); const r=await fetch('/apply',{method:'POST'}); const j=await r.json(); document.getElementById('msg').textContent=j.ok?'폰트 반영 완료':'반영 실패'; document.getElementById('pv').src='./web_ga_series_preview_v288.html?t='+(Date.now())}
+async function saveParams(){const r=await fetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(collect())}); return await r.json()}
+async function applyFont(){document.getElementById('msg').textContent='적용중...'; const s=await saveParams(); if(!s.ok){document.getElementById('msg').textContent='저장 실패'; return;} const r=await fetch('/apply',{method:'POST'}); const j=await r.json(); document.getElementById('msg').textContent=j.ok?'폰트 반영 완료':'반영 실패'; document.getElementById('pv').src='./web_ga_series_preview_v288.html?t='+(Date.now())}
 load();
 </script>
 </body></html>
