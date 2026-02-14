@@ -1,111 +1,110 @@
-<!doctype html><html><head><meta charset='utf-8'><title>Ga10 Editor</title>
+<!doctype html><html><head><meta charset='utf-8'><title>Ga10 One-Panel Editor</title>
 <style>
-  :root{--left:220px}
   *{box-sizing:border-box}
-  body{font-family:sans-serif;margin:0}
-  .wrap{display:grid;grid-template-columns:var(--left) 1fr;min-height:100vh}
-  .left{padding:10px 10px 16px 10px;border-right:1px solid #ddd;background:#fff}
-  .left h2{margin:0 0 8px 0;font-size:15px}
-  .preview-box{border:1px solid #ddd;background:#fff}
-  .preview-box iframe{width:100%;height:calc(100vh - 64px);border:0;display:block}
-  .right{position:sticky;top:0;height:100vh;overflow:auto;padding:6px;background:#fafafa}
-  .toolbar{display:flex;gap:6px;align-items:center;margin-bottom:6px;position:sticky;top:0;background:#fafafa;padding-bottom:4px}
-  button{padding:5px 7px;font-size:12px}
-  #msg{font-size:12px;color:#444}
-  .table-wrap{overflow-x:auto;background:#fff;border:1px solid #ddd}
-  table{border-collapse:collapse;min-width:620px;width:100%;table-layout:fixed}
-  td,th{border:1px solid #ddd;padding:3px;font-size:10px;vertical-align:middle}
-  th:nth-child(1),td:nth-child(1){width:70px}
-  th:nth-child(2),td:nth-child(2){width:120px}
-  th:nth-child(3),td:nth-child(3),th:nth-child(4),td:nth-child(4),th:nth-child(5),td:nth-child(5),th:nth-child(6),td:nth-child(6){width:70px}
-  th{position:sticky;top:30px;background:#f3f3f3;z-index:1}
-  input{width:56px;padding:2px;font-size:10px}
-  .id{font-family:ui-monospace,Menlo,monospace;font-size:10px;white-space:nowrap}
+  body{font-family:sans-serif;margin:14px;background:#fafafa}
+  h2{margin:0 0 10px 0}
+  .msg{font-size:12px;color:#444;margin-bottom:10px}
+  .card{background:#fff;border:1px solid #ddd;border-radius:8px;padding:10px;margin-bottom:10px}
+  .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .label{font-size:13px;color:#333;font-weight:600}
+  .sample{font-family:PH,serif;font-size:64px;line-height:1.2;min-width:120px;text-align:right}
+  .grid{display:grid;grid-template-columns:repeat(8,minmax(68px,1fr));gap:6px;margin-top:8px}
+  .grid.two{grid-template-columns:repeat(16,minmax(60px,1fr));}
+  .k{font-size:10px;color:#666}
+  input{width:100%;padding:4px 5px;font-size:12px}
+  .btns{display:flex;gap:6px;margin-top:8px}
+  button{padding:6px 10px;font-size:12px}
 </style>
+<script>
+const t = new URLSearchParams(location.search).get('t') || Date.now().toString();
+const st = document.createElement('style');
+st.textContent = `@font-face{font-family:PH;src:url('./PaliHangulV289_Ga10Editor.otf?t=${t}') format('opentype')}`;
+document.head.appendChild(st);
+</script>
 </head><body>
-<div class='wrap'>
-  <section class='left'>
-    <h2>가계열 10개 미리보기 (실폰트)</h2>
-    <div class='preview-box'>
-      <iframe id='pv' src='./web_ga_series_preview_v288.html'></iframe>
-    </div>
-  </section>
-
-  <aside class='right'>
-    <div class='toolbar'>
-      <button onclick='applyFont()'>저장 + 폰트 반영</button>
-      <span id='msg'></span>
-    </div>
-
-    <div class='table-wrap'>
-      <table id='tbl'>
-        <thead>
-          <tr><th>ID</th><th>설명</th><th>x</th><th>y</th><th>width(u)</th><th>height(u)</th></tr>
-        </thead>
-        <tbody></tbody>
-      </table>
-    </div>
-  </aside>
-</div>
+<h2>가계열 10개 편집기 (단일 패널)</h2>
+<div class='msg' id='msg'>각 항목 옆에서 바로 수정하고 저장/반영할 수 있어요.</div>
+<div id='root'></div>
 
 <script>
-const rows=[
- ['id1_mac','1) 가+장음 (mac)'],
- ['id2_top','2) 가+윗점+장음 (top)'],
- ['id2_mac','2) 가+윗점+장음 (mac)'],
- ['id3_top','3) 가+윗점'],
- ['id4_bot','4) 간+아랫점'],
- ['id5_top','5) 강+윗점'],
- ['id6_tri','6) 강+아랫역삼각형'],
- ['id7_mac','7) 까+장음'],
- ['id8_tilde','8) 깐+아랫물결'],
- ['id9_tri','9) 깡+아랫역삼각형'],
- ['id10_tilde','10) 낀+아랫물결']
+const items = [
+  {key:'id1_mac', label:'1) 가+장음', sample:'가︠'},
+  {key:'id2_top', label:'2-a) 가+윗점+장음 (윗점)', sample:'가̊︠'},
+  {key:'id2_mac', label:'2-b) 가+윗점+장음 (장음)', sample:'가̊︠'},
+  {key:'id3_top', label:'3) 가+윗점', sample:'가̊'},
+  {key:'id4_bot', label:'4) 간+아랫점', sample:'간̥'},
+  {key:'id5_top', label:'5) 강+윗점', sample:'강̊'},
+  {key:'id6_tri', label:'6) 강+아랫역삼각형', sample:'강ˑ'},
+  {key:'id7_mac', label:'7) 까+장음', sample:'까︠'},
+  {key:'id8_tilde', label:'8) 깐+아랫물결', sample:'깐̰'},
+  {key:'id9_tri', label:'9) 깡+아랫역삼각형', sample:'깡ˑ'},
+  {key:'id10_tilde', label:'10) 낀+아랫물결', sample:'낀̰'},
 ];
 
-async function load(){
- const r=await fetch('/params'); const p=await r.json();
- const tb=document.querySelector('#tbl tbody'); tb.innerHTML='';
- rows.forEach(([id,label])=>{
-  const v=p[id]||{x:0,y:0,width:100,height:100};
-  tb.insertAdjacentHTML('beforeend',
-   `<tr>
-      <td class='id'>${id}</td>
-      <td>${label}</td>
-      <td><input id='${id}_x' value='${v.x}'></td>
-      <td><input id='${id}_y' value='${v.y}'></td>
-      <td><input id='${id}_w' value='${v.width}'></td>
-      <td><input id='${id}_h' value='${v.height}'></td>
-    </tr>`)
- })
+let state = {};
+
+function card(it){
+  const v = state[it.key] || {x:0,y:0,width:100,height:100};
+  return `
+  <div class='card' id='card_${it.key}'>
+    <div class='top'>
+      <div class='label'>${it.label} <span style='font-size:11px;color:#888'>(${it.key})</span></div>
+      <div class='sample'>${it.sample}</div>
+    </div>
+    <div class='grid'>
+      <div><div class='k'>x</div><input id='${it.key}_x' value='${v.x}'></div>
+      <div><div class='k'>y</div><input id='${it.key}_y' value='${v.y}'></div>
+      <div><div class='k'>width(u)</div><input id='${it.key}_w' value='${v.width}'></div>
+      <div><div class='k'>height(u)</div><input id='${it.key}_h' value='${v.height}'></div>
+    </div>
+    <div class='btns'>
+      <button onclick="saveOne('${it.key}')">저장</button>
+      <button onclick="applyOne('${it.key}')">저장 + 폰트 반영</button>
+    </div>
+  </div>`;
 }
 
-function collect(){
- const p={};
- rows.forEach(([id])=>p[id]={
-   x:+document.getElementById(id+'_x').value,
-   y:+document.getElementById(id+'_y').value,
-   width:+document.getElementById(id+'_w').value,
-   height:+document.getElementById(id+'_h').value
- });
- return p
+function readOne(key){
+  return {
+    x:+document.getElementById(key+'_x').value,
+    y:+document.getElementById(key+'_y').value,
+    width:+document.getElementById(key+'_w').value,
+    height:+document.getElementById(key+'_h').value,
+  }
 }
 
-async function saveParams(){
- const r=await fetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(collect())});
- return await r.json()
+function collectAll(){
+  const p={...state};
+  items.forEach(it=>p[it.key]=readOne(it.key));
+  return p;
 }
 
-async function applyFont(){
- document.getElementById('msg').textContent='적용중...';
- const s=await saveParams();
- if(!s.ok){document.getElementById('msg').textContent='저장 실패'; return;}
- const r=await fetch('/apply',{method:'POST'});
- const j=await r.json();
- document.getElementById('msg').textContent=j.ok?'폰트 반영 완료':'반영 실패';
- document.getElementById('pv').src='./web_ga_series_preview_v288.html?t='+(Date.now())
+async function saveAll(payload){
+  const r=await fetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+  return await r.json();
 }
 
-load();
+async function saveOne(key){
+  state[key]=readOne(key);
+  const j = await saveAll(collectAll());
+  document.getElementById('msg').textContent = j.ok ? `${key} 저장됨` : `저장 실패: ${key}`;
+}
+
+async function applyOne(key){
+  state[key]=readOne(key);
+  document.getElementById('msg').textContent = `${key} 반영중...`;
+  const s = await saveAll(collectAll());
+  if(!s.ok){ document.getElementById('msg').textContent='저장 실패'; return; }
+  const r=await fetch('/apply',{method:'POST'}); const j=await r.json();
+  document.getElementById('msg').textContent = j.ok ? `${key} 폰트 반영 완료` : `반영 실패: ${key}`;
+  if(j.ok) location.href = './editor?t=' + Date.now();
+}
+
+async function init(){
+  const r=await fetch('/params'); state = await r.json();
+  document.getElementById('root').innerHTML = items.map(card).join('');
+}
+
+init();
 </script>
 </body></html>
