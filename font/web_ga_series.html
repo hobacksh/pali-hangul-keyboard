@@ -2,29 +2,31 @@
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
-  <title>가 계열 10개 (GSUB 내부 조정)</title>
+  <title>가 계열 10개 (GSUB 내부 조정 + 좌표)</title>
   <style>
-    @font-face { font-family: 'PaliHangulTest'; src: url('./PaliHangulV285_Ga10.otf') format('opentype'); }
-    body { font-family: 'PaliHangulTest', serif; margin: 32px; }
+    @font-face { font-family: 'PaliHangulTest'; src: url('./PaliHangulV286_Ga10.otf') format('opentype'); }
+    body { font-family: 'PaliHangulTest', serif; margin: 28px; }
     h1 { font-family: sans-serif; font-size: 22px; margin-bottom: 8px; }
     .sub { font-family: sans-serif; color:#666; margin-bottom: 16px; }
-    .line { font-size: 72px; line-height: 1.45; }
-    .label { font-family: sans-serif; font-size: 14px; color: #666; display: inline-block; width: 250px; }
+    .row { display:flex; align-items:baseline; gap:18px; margin:6px 0; }
+    .line { font-size: 72px; line-height: 1.35; min-width: 520px; }
+    .label { font-family: sans-serif; font-size: 14px; color: #666; display:inline-block; width: 250px; }
+    .coord { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; color:#444; }
   </style>
 </head>
 <body>
-  <h1>‘가’계열 10개 (GSUB 내부 좌표 조정본)</h1>
-  <div class="sub">웹 오버레이 없이 폰트 내부 GSUB 조정만 적용</div>
+  <h1>‘가’계열 10개 (폰트 내부 GSUB 조정)</h1>
+  <div class="sub">요청사항 반영: 좌표값 표시 + 아랫역삼각형은 채워진 형태(black triangle source) 사용</div>
 
-  <div class="line"><span class="label">1) 가 + 장음</span>가︠</div>
-  <div class="line"><span class="label">2) 가 + 윗점+장음</span>가̊︠</div>
-  <div class="line"><span class="label">3) 가 + 윗점</span>가̊</div>
-  <div class="line"><span class="label">4) 간 + 아랫점</span>간̥</div>
-  <div class="line"><span class="label">5) 강 + 윗점</span>강̊</div>
-  <div class="line"><span class="label">6) 강 + 아랫 역삼각형</span>강ˑ</div>
-  <div class="line"><span class="label">7) 까 + 장음</span>까︠</div>
-  <div class="line"><span class="label">8) 깐 + 아랫물결</span>깐̰</div>
-  <div class="line"><span class="label">9) 깡 + 아랫 역삼각형</span>깡ˑ</div>
-  <div class="line"><span class="label">10) 낀 + 아랫물결</span>낀̰</div>
+  <div class="row"><div class="line"><span class="label">1) 가 + 장음</span>가︠</div><div class="coord">ga mac=(406,805)</div></div>
+  <div class="row"><div class="line"><span class="label">2) 가 + 윗점+장음</span>가̊︠</div><div class="coord">ga top=(170,805), mac=(406,805)</div></div>
+  <div class="row"><div class="line"><span class="label">3) 가 + 윗점</span>가̊</div><div class="coord">ga top=(170,805)</div></div>
+  <div class="row"><div class="line"><span class="label">4) 간 + 아랫점</span>간̥</div><div class="coord">gan bot=(605,-127)</div></div>
+  <div class="row"><div class="line"><span class="label">5) 강 + 윗점</span>강̊</div><div class="coord">gang top=(155,806)</div></div>
+  <div class="row"><div class="line"><span class="label">6) 강 + 아랫 역삼각형</span>강ˑ</div><div class="coord">gang bot=(817,-158)</div></div>
+  <div class="row"><div class="line"><span class="label">7) 까 + 장음</span>까︠</div><div class="coord">kka mac=(413,805)</div></div>
+  <div class="row"><div class="line"><span class="label">8) 깐 + 아랫물결</span>깐̰</div><div class="coord">kkan bot=(643,-127)</div></div>
+  <div class="row"><div class="line"><span class="label">9) 깡 + 아랫 역삼각형</span>깡ˑ</div><div class="coord">kkang bot=(831,-159)</div></div>
+  <div class="row"><div class="line"><span class="label">10) 낀 + 아랫물결</span>낀̰</div><div class="coord">kkin bot=(638,-127)</div></div>
 </body>
 </html>
