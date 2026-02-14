@@ -53,17 +53,33 @@ sub='rlig_v289_ga10_sub'
 S0=0xF100
 step=0
 
-def pct(v): return max(0.2, v/100.0)
+def _dim(v, fallback=100):
+    try:
+        n = float(v)
+    except Exception:
+        n = float(fallback)
+    return max(1.0, n)
 
-def add_ref(g, mark, tx, ty, sx=1.0, sy=1.0):
-    mg=font[mark]; bb=mg.boundingBox(); cx=(bb[0]+bb[2])/2; cy=(bb[1]+bb[3])/2
-    mat=psMat.compose(psMat.translate(-cx,-cy), psMat.scale(sx,sy))
-    mat=psMat.compose(mat, psMat.translate(tx,ty))
+def add_ref_abs(g, mark, tx, ty, target_w, target_h):
+    mg = font[mark]
+    bb = mg.boundingBox()
+    src_w = max(1.0, bb[2] - bb[0])
+    src_h = max(1.0, bb[3] - bb[1])
+    cx = (bb[0] + bb[2]) / 2.0
+    cy = (bb[1] + bb[3]) / 2.0
+    sx = _dim(target_w) / src_w
+    sy = _dim(target_h) / src_h
+    mat = psMat.compose(psMat.translate(-cx, -cy), psMat.scale(sx, sy))
+    mat = psMat.compose(mat, psMat.translate(tx, ty))
     g.addReference(mg.glyphname, mat)
 
-def draw_ring_scaled(g,cx,cy,sw=1.0,sh=1.0,r_out=90,r_in=60):
-    pen=g.glyphPen(); k=0.5522
-    rox,roy=r_out*sw,r_out*sh; rix,riy=r_in*sw,r_in*sh
+def draw_ring_abs(g, cx, cy, outer_w, outer_h):
+    pen = g.glyphPen(); k = 0.5522
+    rox = _dim(outer_w) / 2.0
+    roy = _dim(outer_h) / 2.0
+    # inner ring keeps fixed proportion
+    rix = rox * 0.66
+    riy = roy * 0.66
     pen.moveTo((cx-rox,cy)); pen.curveTo((cx-rox,cy+roy*k),(cx-rox*k,cy+roy),(cx,cy+roy)); pen.curveTo((cx+rox*k,cy+roy),(cx+rox,cy+roy*k),(cx+rox,cy)); pen.curveTo((cx+rox,cy-roy*k),(cx+rox*k,cy-roy),(cx,cy-roy)); pen.curveTo((cx-rox*k,cy-roy),(cx-rox,cy-roy*k),(cx-rox,cy)); pen.closePath()
     pen.moveTo((cx+rix,cy)); pen.curveTo((cx+rix,cy+riy*k),(cx+rix*k,cy+riy),(cx,cy+riy)); pen.curveTo((cx-rix*k,cy+riy),(cx-rix,cy+riy*k),(cx-rix,cy)); pen.curveTo((cx-rix,cy-riy*k),(cx-rix*k,cy-riy),(cx,cy-riy)); pen.curveTo((cx+rix*k,cy-riy),(cx+rix,cy-riy*k),(cx+rix,cy)); pen.closePath(); g.correctDirection()
 
@@ -74,20 +90,23 @@ def newg():
 def lig_single(base_cp, mark_cp, pos):
     b=font[base_cp]
     g=newg()
+    w = _dim(pos.get('width', 100))
+    h = _dim(pos.get('height', 100))
     if mark_cp in (RING_ABOVE, RING_BELOW):
-        draw_ring_scaled(g, pos['x'], pos['y'], pct(pos['width']), pct(pos['height']))
+        draw_ring_abs(g, pos['x'], pos['y'], w, h)
     elif mark_cp==TILDE_BELOW:
-        add_ref(g, mark_cp, pos['x'], pos['y'], sx=pct(pos['width']), sy=pct(pos['height'])*1.15)
+        add_ref_abs(g, mark_cp, pos['x'], pos['y'], w, h)
     else:
-        add_ref(g, mark_cp, pos['x'], pos['y'], sx=pct(pos['width']), sy=pct(pos['height']))
+        add_ref_abs(g, mark_cp, pos['x'], pos['y'], w, h)
     g.addReference(b.glyphname); g.width=b.width
     g.addPosSub(sub,(b.glyphname,font[mark_cp].glyphname))
 
 def lig_combo(base_cp, p_top, p_mac):
     b=font[base_cp]
     g=newg()
-    draw_ring_scaled(g, p_top['x'], p_top['y'], pct(p_top['width']), pct(p_top['height']))
-    add_ref(g, MACRON, p_mac['x'], p_mac['y'], sx=pct(p_mac['width'])*1.5, sy=pct(p_mac['height']))
+    draw_ring_abs(g, p_top['x'], p_top['y'], _dim(p_top.get('width', 100)), _dim(p_top.get('height', 100)))
+    # macron width is absolute; apply legacy 1.5x feel by defaulting larger base width in params if needed
+    add_ref_abs(g, MACRON, p_mac['x'], p_mac['y'], _dim(p_mac.get('width', 100))*1.5, _dim(p_mac.get('height', 100)))
     g.addReference(b.glyphname); g.width=b.width
     g.addPosSub(sub,(b.glyphname,font[RING_ABOVE].glyphname,font[MACRON].glyphname))
     g.addPosSub(sub,(b.glyphname,font[MACRON].glyphname,font[RING_ABOVE].glyphname))
