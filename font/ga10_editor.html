@@ -1,18 +1,23 @@
-<!doctype html><html><head><meta charset='utf-8'><title>Ga10 One-Panel Editor</title>
+<!doctype html><html><head><meta charset='utf-8'><title>PaliHangul Editor</title>
 <style>
   *{box-sizing:border-box}
-  body{font-family:sans-serif;margin:14px;background:#fafafa}
+  body{font-family:sans-serif;margin:0;background:#fafafa;overflow-x:hidden}
+  .page{padding:12px;max-width:100vw}
   h2{margin:0 0 10px 0}
+  .nav{display:flex;gap:8px;margin-bottom:10px}
+  .nav button{padding:7px 10px;font-size:12px}
+  .nav .on{background:#111;color:#fff;border-color:#111}
   .msg{font-size:12px;color:#444;margin-bottom:10px}
-  .card{background:#fff;border:1px solid #ddd;border-radius:8px;padding:10px;margin-bottom:10px}
-  .top{display:flex;justify-content:space-between;align-items:center;gap:10px}
-  .label{font-size:13px;color:#333;font-weight:600}
-  .sample{font-family:PH,serif;font-size:64px;line-height:1.2;min-width:120px;text-align:right}
-  .grid{display:grid;grid-template-columns:repeat(8,minmax(68px,1fr));gap:6px;margin-top:8px}
-  .grid.two{grid-template-columns:repeat(16,minmax(60px,1fr));}
+  #root{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:start;width:100%}
+  .card{background:#fff;border:1px solid #ddd;border-radius:8px;padding:12px;width:100%;max-width:100%;min-width:0;overflow:hidden}
+  .sample{font-family:PH,serif;font-size:72px;line-height:1.1;text-align:center;margin:2px 0 10px 0}
+  .meta{font-size:13px;color:#333;font-weight:600;text-align:center;margin-bottom:10px}
+  .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
   .k{font-size:10px;color:#666}
-  input{width:100%;padding:4px 5px;font-size:12px}
-  .btns{display:flex;gap:6px;margin-top:8px}
+  input{width:100%;padding:5px 6px;font-size:12px}
+  .copy{display:flex;gap:6px;justify-content:center;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+  .copy select{max-width:320px;padding:5px;font-size:12px}
+  .btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
   button{padding:6px 10px;font-size:12px}
 </style>
 <script>
@@ -22,40 +27,91 @@ st.textContent = `@font-face{font-family:PH;src:url('./PaliHangulV289_Ga10Editor
 document.head.appendChild(st);
 </script>
 </head><body>
-<h2>가계열 10개 편집기 (단일 패널)</h2>
-<div class='msg' id='msg'>각 항목 옆에서 바로 수정하고 저장/반영할 수 있어요.</div>
+<div class='page'>
+<h2>빠알리 한글 폰트 편집기</h2>
+<div style='margin-bottom:8px'>
+  <button onclick="applyAll()">전체 저장 + 폰트 반영</button>
+</div>
+<div class='nav'>
+  <button id='tab_ga' class='on' onclick="setGroup('ga')">가계열</button>
+  <button id='tab_na' onclick="setGroup('na')">나계열</button>
+</div>
+<div class='msg' id='msg'>항목별 저장/반영이 가능합니다.</div>
 <div id='root'></div>
+</div>
 
 <script>
-const items = [
-  {key:'id1_mac', label:'1) 가+장음', sample:'가︠'},
-  {key:'id2_top', label:'2-a) 가+윗점+장음 (윗점)', sample:'가̊︠'},
-  {key:'id2_mac', label:'2-b) 가+윗점+장음 (장음)', sample:'가̊︠'},
-  {key:'id3_top', label:'3) 가+윗점', sample:'가̊'},
-  {key:'id4_bot', label:'4) 간+아랫점', sample:'간̥'},
-  {key:'id5_top', label:'5) 강+윗점', sample:'강̊'},
-  {key:'id6_tri', label:'6) 강+아랫역삼각형', sample:'강ˑ'},
-  {key:'id7_mac', label:'7) 까+장음', sample:'까︠'},
-  {key:'id8_tilde', label:'8) 깐+아랫물결', sample:'깐̰'},
-  {key:'id9_tri', label:'9) 깡+아랫역삼각형', sample:'깡ˑ'},
-  {key:'id10_tilde', label:'10) 낀+아랫물결', sample:'낀̰'},
-];
+const ITEMS = {
+  ga: [
+    {key:'id1_mac', title:'1) 가+장음', sample:'가︠'},
+    {key:'id2_top', title:'2-a) 가+윗점+장음(윗점)', sample:'가̊︠'},
+    {key:'id2_mac', title:'2-b) 가+윗점+장음(장음)', sample:'가̊︠'},
+    {key:'id3_top', title:'3) 가+윗점', sample:'가̊'},
+    {key:'id4_bot', title:'4) 간+아랫점', sample:'간̥'},
+    {key:'id5_top', title:'5) 강+윗점', sample:'강̊'},
+    {key:'id6_tri', title:'6) 강+아랫역삼각형', sample:'강ˑ'},
+    {key:'id7_mac', title:'7) 까+장음', sample:'까︠'},
+    {key:'id8_tilde', title:'8) 깐+아랫물결', sample:'깐̰'},
+    {key:'id9_tri', title:'9) 깡+아랫역삼각형', sample:'깡ˑ'},
+    {key:'id10_tilde', title:'10) 낀+아랫물결', sample:'낀̰'},
+  ],
+  na: [
+    {key:'na1_mac', title:'1) 나+장음', sample:'나︠'},
+    {key:'na2_top', title:'2) 나+윗점', sample:'나̊'},
+    {key:'na3_top', title:'3-a) 나+장음+윗점(윗점)', sample:'나̊︠'},
+    {key:'na3_mac', title:'3-b) 나+장음+윗점(장음)', sample:'나̊︠'},
+    {key:'na4_mac', title:'4) 낙+장음', sample:'낙︠'},
+    {key:'na5_top', title:'5-a) 난+윗점+아랫물결(윗점)', sample:'난̰̊'},
+    {key:'na5_tilde', title:'5-b) 난+윗점+아랫물결(아랫물결)', sample:'난̰̊'},
+    {key:'na6_top', title:'6) 난+윗점', sample:'난̊'},
+    {key:'na7_tilde', title:'7) 난+아랫물결', sample:'난̰'},
+    {key:'na8_mac', title:'8-a) 난+장음+아랫물결(장음)', sample:'난̰︠'},
+    {key:'na8_tilde', title:'8-b) 난+장음+아랫물결(아랫물결)', sample:'난̰︠'},
+    {key:'na9_top', title:'9) 낫+윗점', sample:'낫̊'},
+    {key:'na10_top', title:'10) 낭+윗점', sample:'낭̊'},
+    {key:'na11_tri', title:'11) 낭+역삼각형', sample:'낭ˑ'},
+    {key:'na12_top', title:'12) 냐+윗점', sample:'냐̊'},
+    {key:'na13_top', title:'13-a) 냐+장음+윗점(윗점)', sample:'냐︠̊'},
+    {key:'na13_mac', title:'13-b) 냐+장음+윗점(장음)', sample:'냐︠̊'},
+    {key:'na14_tilde', title:'14) 냣+아랫물결', sample:'냣̰'},
+    {key:'na15_tilde', title:'15) 냥+아랫물결', sample:'냥̰'},
+    {key:'na16_top', title:'16-a) 누+장음+윗점(윗점)', sample:'누︠̊'},
+    {key:'na16_mac', title:'16-b) 누+장음+윗점(장음)', sample:'누︠̊'},
+    {key:'na17_top', title:'17) 니+윗점', sample:'니̊'},
+    {key:'na18_top', title:'18) 네+윗점', sample:'네̊'},
+  ]
+};
 
 let state = {};
+let group = 'ga';
+
+function allItems(){ return Object.values(ITEMS).flat(); }
+
+function sourceOptions(targetKey){
+  return allItems()
+    .filter(it => it.key !== targetKey)
+    .map(it => `<option value="${it.key}">${it.title} (${it.key})</option>`)
+    .join('');
+}
 
 function card(it){
   const v = state[it.key] || {x:0,y:0,width:100,height:100};
   return `
   <div class='card' id='card_${it.key}'>
-    <div class='top'>
-      <div class='label'>${it.label} <span style='font-size:11px;color:#888'>(${it.key})</span></div>
-      <div class='sample'>${it.sample}</div>
-    </div>
+    <div class='sample'>${it.sample}</div>
+    <div class='meta'>${it.title} (${it.key})</div>
     <div class='grid'>
       <div><div class='k'>x</div><input id='${it.key}_x' value='${v.x}'></div>
       <div><div class='k'>y</div><input id='${it.key}_y' value='${v.y}'></div>
       <div><div class='k'>width(u)</div><input id='${it.key}_w' value='${v.width}'></div>
       <div><div class='k'>height(u)</div><input id='${it.key}_h' value='${v.height}'></div>
+    </div>
+    <div class='copy'>
+      <select id='${it.key}_src'>
+        <option value=''>다른 항목 값 불러오기…</option>
+        ${sourceOptions(it.key)}
+      </select>
+      <button onclick="copyFromSelected('${it.key}')">값 불러오기</button>
     </div>
     <div class='btns'>
       <button onclick="saveOne('${it.key}')">저장</button>
@@ -63,6 +119,14 @@ function card(it){
     </div>
   </div>`;
 }
+
+function render(){
+  document.getElementById('tab_ga').classList.toggle('on', group==='ga');
+  document.getElementById('tab_na').classList.toggle('on', group==='na');
+  document.getElementById('root').innerHTML = ITEMS[group].map(card).join('');
+}
+
+function setGroup(g){ group=g; render(); }
 
 function readOne(key){
   return {
@@ -75,13 +139,32 @@ function readOne(key){
 
 function collectAll(){
   const p={...state};
-  items.forEach(it=>p[it.key]=readOne(it.key));
+  Object.values(ITEMS).flat().forEach(it=>{
+    const k=it.key;
+    const ex=document.getElementById(k+'_x');
+    if(ex){
+      p[k]={x:+document.getElementById(k+'_x').value,y:+document.getElementById(k+'_y').value,width:+document.getElementById(k+'_w').value,height:+document.getElementById(k+'_h').value};
+    }
+  });
   return p;
 }
 
 async function saveAll(payload){
   const r=await fetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   return await r.json();
+}
+
+function copyFromSelected(targetKey){
+  const sel = document.getElementById(targetKey + '_src');
+  const srcKey = sel ? sel.value : '';
+  if(!srcKey || !state[srcKey]) return;
+  const v = state[srcKey];
+  document.getElementById(targetKey+'_x').value = v.x;
+  document.getElementById(targetKey+'_y').value = v.y;
+  document.getElementById(targetKey+'_w').value = v.width;
+  document.getElementById(targetKey+'_h').value = v.height;
+  state[targetKey] = {x:v.x,y:v.y,width:v.width,height:v.height};
+  document.getElementById('msg').textContent = `${targetKey} <= ${srcKey} 값 불러옴 (저장해야 반영)`;
 }
 
 async function saveOne(key){
@@ -100,9 +183,18 @@ async function applyOne(key){
   if(j.ok) location.href = './editor?t=' + Date.now();
 }
 
+async function applyAll(){
+  document.getElementById('msg').textContent = `전체 반영중...`;
+  const s = await saveAll(collectAll());
+  if(!s.ok){ document.getElementById('msg').textContent='전체 저장 실패'; return; }
+  const r=await fetch('/apply',{method:'POST'}); const j=await r.json();
+  document.getElementById('msg').textContent = j.ok ? `전체 폰트 반영 완료` : `전체 반영 실패`;
+  if(j.ok) location.href = './editor?t=' + Date.now();
+}
+
 async function init(){
   const r=await fetch('/params'); state = await r.json();
-  document.getElementById('root').innerHTML = items.map(card).join('');
+  render();
 }
 
 init();
