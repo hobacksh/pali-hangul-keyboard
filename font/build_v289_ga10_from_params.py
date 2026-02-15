@@ -109,17 +109,17 @@ def lig_single(base_char, mark, pos_key):
     if pos_key not in P: return
     b = font[ord(base_char)]
     g = newg()
-    draw_mark(g, mark, P[pos_key])
     g.addReference(b.glyphname); g.width=b.width
+    draw_mark(g, mark, P[pos_key])
     g.addPosSub(sub,(b.glyphname,font[mark].glyphname))
 
 def lig_combo2(base_char, markA, keyA, markB, keyB):
     if keyA not in P or keyB not in P: return
     b = font[ord(base_char)]
     g = newg()
+    g.addReference(b.glyphname); g.width=b.width
     draw_mark(g, markA, P[keyA])
     draw_mark(g, markB, P[keyB])
-    g.addReference(b.glyphname); g.width=b.width
     g.addPosSub(sub,(b.glyphname,font[markA].glyphname,font[markB].glyphname))
     g.addPosSub(sub,(b.glyphname,font[markB].glyphname,font[markA].glyphname))
 
