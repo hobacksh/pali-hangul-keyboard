@@ -4,7 +4,7 @@
   body{font-family:sans-serif;margin:0;background:#fafafa;overflow-x:hidden}
   .page{padding:12px;max-width:100vw}
   h2{margin:0 0 10px 0}
-  .nav{display:flex;gap:8px;margin-bottom:10px}
+  .nav{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
   .nav button{padding:7px 10px;font-size:12px}
   .nav .on{background:#111;color:#fff;border-color:#111}
   .msg{font-size:12px;color:#444;margin-bottom:10px}
@@ -34,8 +34,19 @@ document.head.appendChild(st);
 </div>
 <div class='nav'>
   <button id='tab_ga' class='on' onclick="setGroup('ga')">가계열</button>
-  <button id='tab_na' onclick="setGroup('na')">나계열</button>
-  <button id='tab_da' onclick="setGroup('da')">다계열</button>
+  <button id='tab_na'  onclick="setGroup('na')">나계열</button>
+  <button id='tab_da'  onclick="setGroup('da')">다계열</button>
+  <button id='tab_ra'  onclick="setGroup('ra')">라계열</button>
+  <button id='tab_ma'  onclick="setGroup('ma')">마계열</button>
+  <button id='tab_ba'  onclick="setGroup('ba')">바계열</button>
+  <button id='tab_sa'  onclick="setGroup('sa')">사계열</button>
+  <button id='tab_a'  onclick="setGroup('a')">아계열</button>
+  <button id='tab_ja'  onclick="setGroup('ja')">자계열</button>
+  <button id='tab_cha'  onclick="setGroup('cha')">차계열</button>
+  <button id='tab_ka'  onclick="setGroup('ka')">카계열</button>
+  <button id='tab_ta'  onclick="setGroup('ta')">타계열</button>
+  <button id='tab_pa'  onclick="setGroup('pa')">파계열</button>
+  <button id='tab_ha'  onclick="setGroup('ha')">하계열</button>
 </div>
 <div class='msg' id='msg'>항목별 저장/반영이 가능합니다.</div>
 <div id='root'></div>
@@ -105,6 +116,122 @@ const ITEMS = {
     {key:'da20_bot', title:'20) 띠+아랫점', sample:'띠̥'},
     {key:'da21_bot', title:'21) 띳+아랫점', sample:'띳̥'},
     {key:'da22_bot', title:'22) 띤+아랫점', sample:'띤̥'},
+  ],
+  ra: [
+    {key:'ra1_mac', title:'1) 라+장음', sample:'라︠'},
+    {key:'ra2_mac', title:'2-a) 라+장음+아랫점(장음)', sample:'라̥︠'},
+    {key:'ra2_bot', title:'2-b) 라+장음+아랫점(아랫점)', sample:'라̥︠'},
+    {key:'ra3_double', title:'3) 랏+자음중복', sample:'랏ʺ'},
+    {key:'ra4_tilde_top', title:'4) 로+윗물결', sample:'로̃'},
+    {key:'ra5_double', title:'5) 로+자음중복', sample:'로ʺ'},
+    {key:'ra6_mac', title:'6) 루+장음', sample:'루︠'},
+    {key:'ra7_mac', title:'7-a) 리+장음+아랫점(장음)', sample:'리̥︠'},
+    {key:'ra7_bot', title:'7-b) 리+장음+아랫점(아랫점)', sample:'리̥︠'},
+  ],
+  ma: [
+    {key:'ma1_mac', title:'1) 마+장음', sample:'마︠'},
+    {key:'ma2_tilde', title:'2) 만+아랫물결', sample:'만̰'},
+    {key:'ma3_tri', title:'3) 망+역삼각형', sample:'망ˑ'},
+    {key:'ma4_bot', title:'4) 뭇+아랫점', sample:'뭇̥'},
+    {key:'ma5_mac', title:'5) 무+장음', sample:'무︠'},
+    {key:'ma6_mac', title:'6) 물+장음', sample:'물︠'},
+  ],
+  ba: [
+    {key:'ba1_mac', title:'1) 바+장음', sample:'바︠'},
+    {key:'ba2_top', title:'2) 바+윗점', sample:'바̊'},
+    {key:'ba3_top', title:'3-a) 바+장음+윗점(윗점)', sample:'바̊︠'},
+    {key:'ba3_mac', title:'3-b) 바+장음+윗점(장음)', sample:'바̊︠'},
+    {key:'ba4_mac', title:'4) 뱌+장음', sample:'뱌︠'},
+    {key:'ba5_mac', title:'5) 발+장음', sample:'발︠'},
+    {key:'ba6_mac', title:'6-a) 발+장음+아랫점(장음)', sample:'발̥︠'},
+    {key:'ba6_bot', title:'6-b) 발+장음+아랫점(아랫점)', sample:'발̥︠'},
+    {key:'ba7_top', title:'7) 보+윗점', sample:'보̊'},
+    {key:'ba8_top', title:'8) 붕+윗점', sample:'붕̊'},
+    {key:'ba9_top', title:'9) 부+윗점', sample:'부̊'},
+    {key:'ba10_top', title:'10-a) 부+장음+윗점(윗점)', sample:'부̊︠'},
+    {key:'ba10_mac', title:'10-b) 부+장음+윗점(장음)', sample:'부̊︠'},
+    {key:'ba11_top', title:'11) 비+윗점', sample:'비̊'},
+    {key:'ba12_top', title:'12) 빅+윗점', sample:'빅̊'},
+    {key:'ba13_top', title:'13-a) 빈+윗점+아랫물결(윗점)', sample:'빈̰̊'},
+    {key:'ba13_tilde', title:'13-b) 빈+윗점+아랫물결(아랫물결)', sample:'빈̰̊'},
+    {key:'ba14_top', title:'14) 빈+윗점', sample:'빈̊'},
+    {key:'ba15_top', title:'15) 빗+윗점', sample:'빗̊'},
+    {key:'ba16_mac', title:'16) 빠+장음', sample:'빠︠'},
+    {key:'ba17_bot', title:'17) 빤+아랫점', sample:'빤̥'},
+    {key:'ba18_tilde', title:'18) 빤+아랫물결', sample:'빤̰'},
+    {key:'ba19_bot', title:'19) 빳+아랫점', sample:'빳̥'},
+    {key:'ba20_mac', title:'20) 뿌+장음', sample:'뿌︠'},
+    {key:'ba21_tilde', title:'21) 뿐+아랫물결', sample:'뿐̰'},
+    {key:'ba22_top', title:'22) 붓+윗점', sample:'붓̊'},
+    {key:'ba23_top', title:'23) 베+윗점', sample:'베̊'},
+  ],
+  sa: [
+    {key:'sa1_mac', title:'1) 사+장음', sample:'사︠'},
+    {key:'sa2_tilde', title:'2) 산+아랫물결', sample:'산̰'},
+    {key:'sa3_tri', title:'3) 상+역삼각형', sample:'상ˑ'},
+    {key:'sa4_mac', title:'4) 실+장음', sample:'실︠'},
+  ],
+  a: [
+    {key:'a1_mac', title:'1) 아+장음', sample:'아︠'},
+    {key:'a2_tilde', title:'2) 안+아랫물결', sample:'안̰'},
+    {key:'a3_bot', title:'3) 앗+아랫점', sample:'앗̥'},
+    {key:'a4_double', title:'4) 야+자음중복', sample:'야ʺ'},
+    {key:'a5_mac', title:'5) 야+장음', sample:'야︠'},
+    {key:'a6_mac', title:'6-a) 야+장음+자음중복(장음)', sample:'야︠ʺ'},
+    {key:'a6_double', title:'6-b) 야+장음+자음중복(자음중복)', sample:'야︠ʺ'},
+    {key:'a7_tilde', title:'7) 얀+아랫물결', sample:'얀̰'},
+    {key:'a8_caron', title:'8) 오+캐론', sample:'오̌'},
+    {key:'a9_top', title:'9) 와+윗점', sample:'와̊'},
+    {key:'a10_top', title:'10-a) 와+장음+윗점(윗점)', sample:'와̊︠'},
+    {key:'a10_mac', title:'10-b) 와+장음+윗점(장음)', sample:'와̊︠'},
+    {key:'a11_bot', title:'11) 완+아랫점', sample:'완̥'},
+    {key:'a12_top', title:'12) 왕+윗점', sample:'왕̊'},
+    {key:'a13_tri', title:'13) 왕+역삼각형', sample:'왕ˑ'},
+    {key:'a14_bot', title:'14) 웃+아랫점', sample:'웃̥'},
+    {key:'a15_caron', title:'15-a) 웃+캐론+아랫점(캐론)', sample:'웃̥̌'},
+    {key:'a15_bot', title:'15-b) 웃+캐론+아랫점(아랫점)', sample:'웃̥̌'},
+    {key:'a16_tilde', title:'16) 윈+아랫물결', sample:'윈̰'},
+    {key:'a17_double', title:'17) 이+야', sample:'이ʺ'},
+    {key:'a18_double', title:'18) 잉+야', sample:'잉ʺ'},
+    {key:'a19_double', title:'19-a) 잇+야+아랫점(야)', sample:'잇ʺ̥'},
+    {key:'a19_bot', title:'19-b) 잇+야+아랫점(아랫점)', sample:'잇ʺ̥'},
+    {key:'a20_top', title:'20) 윈+윗점', sample:'윈̊'},
+  ],
+  ja: [
+    {key:'ja1_mac', title:'1) 자+장음', sample:'자︠'},
+    {key:'ja2_top', title:'2-a) 자+장음+윗점(윗점)', sample:'자̊︠'},
+    {key:'ja2_mac', title:'2-b) 자+장음+윗점(장음)', sample:'자̊︠'},
+    {key:'ja3_mac', title:'3) 짜+장음', sample:'짜︠'},
+    {key:'ja4_tilde', title:'4) 짠+아랫물결', sample:'짠̰'},
+    {key:'ja5_tilde', title:'5) 찐+아랫물결', sample:'찐̰'},
+    {key:'ja6_bot', title:'6) 찐+아랫점', sample:'찐̥'},
+    {key:'ja7_mac', title:'7) 지+장음', sample:'지︠'},
+  ],
+  cha: [
+    {key:'cha1_mac', title:'1) 차+장음', sample:'차︠'},
+  ],
+  ka: [
+    {key:'ka1_mac', title:'1) 카+장음', sample:'카︠'},
+  ],
+  ta: [
+    {key:'ta1_mac', title:'1) 타+장음', sample:'타︠'},
+    {key:'ta2_mac', title:'2-a) 타+장음+아랫점(장음)', sample:'타̥︠'},
+    {key:'ta2_bot', title:'2-b) 타+장음+아랫점(아랫점)', sample:'타̥︠'},
+    {key:'ta3_bot', title:'3) 탑+아랫점', sample:'탑̥'},
+    {key:'ta4_mac', title:'4-a) 티+장음+아랫점(장음)', sample:'티̥︠'},
+    {key:'ta4_bot', title:'4-b) 티+장음+아랫점(아랫점)', sample:'티̥︠'},
+    {key:'ta5_bot', title:'5) 티+아랫점', sample:'티̥'},
+    {key:'ta6_bot', title:'6) 팅+아랫점', sample:'팅̥'},
+    {key:'ta7_bot', title:'7) 타+아랫점', sample:'타̥'},
+    {key:'ta8_bot', title:'8) 테+아랫점', sample:'테̥'},
+  ],
+  pa: [
+    {key:'pa1_bot', title:'1) 폿+아랫점', sample:'폿̥'},
+  ],
+  ha: [
+    {key:'ha1_mac', title:'1) 후+장음', sample:'후︠'},
+    {key:'ha2_mac', title:'2) 히+장음', sample:'히︠'},
+    {key:'ha3_mac', title:'3) 하+장음', sample:'하︠'},
   ]
 };
 
@@ -112,14 +239,10 @@ let state = {};
 let group = 'ga';
 
 function allItems(){ return Object.values(ITEMS).flat(); }
-
 function sourceOptions(targetKey){
-  return allItems()
-    .filter(it => it.key !== targetKey)
-    .map(it => `<option value="${it.key}">${it.title} (${it.key})</option>`)
-    .join('');
+  return allItems().filter(it => it.key !== targetKey)
+    .map(it => `<option value="${it.key}">${it.title} (${it.key})</option>`).join('');
 }
-
 function card(it){
   const v = state[it.key] || {x:0,y:0,width:100,height:100};
   return `
@@ -133,10 +256,7 @@ function card(it){
       <div><div class='k'>height(u)</div><input id='${it.key}_h' value='${v.height}'></div>
     </div>
     <div class='copy'>
-      <select id='${it.key}_src'>
-        <option value=''>다른 항목 값 불러오기…</option>
-        ${sourceOptions(it.key)}
-      </select>
+      <select id='${it.key}_src'><option value=''>다른 항목 값 불러오기…</option>${sourceOptions(it.key)}</select>
       <button onclick="copyFromSelected('${it.key}')">값 불러오기</button>
     </div>
     <div class='btns'>
@@ -145,85 +265,64 @@ function card(it){
     </div>
   </div>`;
 }
-
 function render(){
   document.getElementById('tab_ga').classList.toggle('on', group==='ga');
   document.getElementById('tab_na').classList.toggle('on', group==='na');
   document.getElementById('tab_da').classList.toggle('on', group==='da');
+  document.getElementById('tab_ra').classList.toggle('on', group==='ra');
+  document.getElementById('tab_ma').classList.toggle('on', group==='ma');
+  document.getElementById('tab_ba').classList.toggle('on', group==='ba');
+  document.getElementById('tab_sa').classList.toggle('on', group==='sa');
+  document.getElementById('tab_a').classList.toggle('on', group==='a');
+  document.getElementById('tab_ja').classList.toggle('on', group==='ja');
+  document.getElementById('tab_cha').classList.toggle('on', group==='cha');
+  document.getElementById('tab_ka').classList.toggle('on', group==='ka');
+  document.getElementById('tab_ta').classList.toggle('on', group==='ta');
+  document.getElementById('tab_pa').classList.toggle('on', group==='pa');
+  document.getElementById('tab_ha').classList.toggle('on', group==='ha');
   document.getElementById('root').innerHTML = ITEMS[group].map(card).join('');
 }
-
 function setGroup(g){ group=g; render(); }
-
 function readOne(key){
-  return {
-    x:+document.getElementById(key+'_x').value,
-    y:+document.getElementById(key+'_y').value,
-    width:+document.getElementById(key+'_w').value,
-    height:+document.getElementById(key+'_h').value,
-  }
+  return {x:+document.getElementById(key+'_x').value,y:+document.getElementById(key+'_y').value,width:+document.getElementById(key+'_w').value,height:+document.getElementById(key+'_h').value}
 }
-
 function collectAll(){
   const p={...state};
   Object.values(ITEMS).flat().forEach(it=>{
-    const k=it.key;
-    const ex=document.getElementById(k+'_x');
-    if(ex){
-      p[k]={x:+document.getElementById(k+'_x').value,y:+document.getElementById(k+'_y').value,width:+document.getElementById(k+'_w').value,height:+document.getElementById(k+'_h').value};
-    }
+    const k=it.key; const ex=document.getElementById(k+'_x');
+    if(ex) p[k]={x:+document.getElementById(k+'_x').value,y:+document.getElementById(k+'_y').value,width:+document.getElementById(k+'_w').value,height:+document.getElementById(k+'_h').value};
   });
   return p;
 }
-
 async function saveAll(payload){
   const r=await fetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   return await r.json();
 }
-
 function copyFromSelected(targetKey){
-  const sel = document.getElementById(targetKey + '_src');
-  const srcKey = sel ? sel.value : '';
-  if(!srcKey || !state[srcKey]) return;
-  const v = state[srcKey];
-  document.getElementById(targetKey+'_x').value = v.x;
-  document.getElementById(targetKey+'_y').value = v.y;
-  document.getElementById(targetKey+'_w').value = v.width;
-  document.getElementById(targetKey+'_h').value = v.height;
-  state[targetKey] = {x:v.x,y:v.y,width:v.width,height:v.height};
-  document.getElementById('msg').textContent = `${targetKey} <= ${srcKey} 값 불러옴 (저장해야 반영)`;
+  const sel=document.getElementById(targetKey+'_src'); const srcKey=sel?sel.value:'';
+  if(!srcKey||!state[srcKey]) return;
+  const v=state[srcKey];
+  document.getElementById(targetKey+'_x').value=v.x; document.getElementById(targetKey+'_y').value=v.y;
+  document.getElementById(targetKey+'_w').value=v.width; document.getElementById(targetKey+'_h').value=v.height;
+  state[targetKey]={x:v.x,y:v.y,width:v.width,height:v.height};
+  document.getElementById('msg').textContent=`${targetKey} <= ${srcKey} 값 불러옴 (저장해야 반영)`;
 }
-
-async function saveOne(key){
-  state[key]=readOne(key);
-  const j = await saveAll(collectAll());
-  document.getElementById('msg').textContent = j.ok ? `${key} 저장됨` : `저장 실패: ${key}`;
-}
-
+async function saveOne(key){ state[key]=readOne(key); const j=await saveAll(collectAll()); document.getElementById('msg').textContent=j.ok?`${key} 저장됨`:`저장 실패: ${key}`; }
 async function applyOne(key){
-  state[key]=readOne(key);
-  document.getElementById('msg').textContent = `${key} 반영중...`;
-  const s = await saveAll(collectAll());
-  if(!s.ok){ document.getElementById('msg').textContent='저장 실패'; return; }
+  state[key]=readOne(key); document.getElementById('msg').textContent=`${key} 반영중...`;
+  const s=await saveAll(collectAll()); if(!s.ok){document.getElementById('msg').textContent='저장 실패';return;}
   const r=await fetch('/apply',{method:'POST'}); const j=await r.json();
-  document.getElementById('msg').textContent = j.ok ? `${key} 폰트 반영 완료` : `반영 실패: ${key}`;
-  if(j.ok) location.href = './editor?t=' + Date.now();
+  document.getElementById('msg').textContent=j.ok?`${key} 폰트 반영 완료`:`반영 실패: ${key}`;
+  if(j.ok) location.href='./editor?t='+Date.now();
 }
-
 async function applyAll(){
-  document.getElementById('msg').textContent = `전체 반영중...`;
-  const s = await saveAll(collectAll());
-  if(!s.ok){ document.getElementById('msg').textContent='전체 저장 실패'; return; }
+  document.getElementById('msg').textContent='전체 반영중...'; const s=await saveAll(collectAll());
+  if(!s.ok){document.getElementById('msg').textContent='전체 저장 실패';return;}
   const r=await fetch('/apply',{method:'POST'}); const j=await r.json();
-  document.getElementById('msg').textContent = j.ok ? `전체 폰트 반영 완료` : `전체 반영 실패`;
-  if(j.ok) location.href = './editor?t=' + Date.now();
+  document.getElementById('msg').textContent=j.ok?'전체 폰트 반영 완료':'전체 반영 실패';
+  if(j.ok) location.href='./editor?t='+Date.now();
 }
-
-async function init(){
-  const r=await fetch('/params'); state = await r.json();
-  render();
-}
-
+async function init(){ const r=await fetch('/params'); state=await r.json(); render(); }
 init();
 </script>
 </body></html>
