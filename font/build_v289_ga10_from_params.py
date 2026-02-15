@@ -122,16 +122,16 @@ def lig_combo2(base_char, markA, keyA, markB, keyB):
     g.addPosSub(sub,(b.glyphname,font[markB].glyphname,font[markA].glyphname))
 
 # --- 가계열 ---
-lig_single('가', MACRON, 'id1_mac')
-lig_combo2('가', TOP, 'id2_top', MACRON, 'id2_mac')
-lig_single('가', TOP, 'id3_top')
-lig_single('간', BOT_DOT, 'id4_bot')
-lig_single('강', TOP, 'id5_top')
-lig_single('강', BOT_TRI, 'id6_tri')
-lig_single('까', MACRON, 'id7_mac')
-lig_single('깐', BOT_TILDE, 'id8_tilde')
-lig_single('깡', BOT_TRI, 'id9_tri')
-lig_single('낀', BOT_TILDE, 'id10_tilde')
+lig_single('가', MACRON, 'ga1_mac')
+lig_combo2('가', TOP, 'ga2_top', MACRON, 'ga2_mac')
+lig_single('가', TOP, 'ga3_top')
+lig_single('간', BOT_DOT, 'ga4_bot')
+lig_single('강', TOP, 'ga5_top')
+lig_single('강', BOT_TRI, 'ga6_tri')
+lig_single('까', MACRON, 'ga7_mac')
+lig_single('깐', BOT_TILDE, 'ga8_tilde')
+lig_single('깡', BOT_TRI, 'ga9_tri')
+lig_single('낀', BOT_TILDE, 'ga10_tilde')
 
 # --- 나계열 ---
 lig_single('나', MACRON, 'na1_mac')
