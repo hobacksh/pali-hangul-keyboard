@@ -121,23 +121,23 @@ lig_single('낀', BOT_TILDE, 'id10_tilde')
 
 # --- 나계열 ---
 lig_single('나', MACRON, 'na1_mac')
-lig_single('나', BOT_DOT, 'na2_top')          # 윗점 -> 아랫점 변경
-lig_combo2('나', BOT_DOT, 'na3_top', MACRON, 'na3_mac')
+lig_single('나', BOT_DOT, 'na2_bot')          # 윗점 -> 아랫점 변경
+lig_combo2('나', BOT_DOT, 'na3_bot', MACRON, 'na3_mac')
 lig_single('낙', MACRON, 'na4_mac')
-lig_combo2('난', BOT_DOT, 'na5_top', BOT_TILDE, 'na5_tilde')
-lig_single('난', BOT_DOT, 'na6_top')
+lig_combo2('난', BOT_DOT, 'na5_bot', BOT_TILDE, 'na5_tilde')
+lig_single('난', BOT_DOT, 'na6_bot')
 lig_single('난', BOT_TILDE, 'na7_tilde')
 lig_combo2('난', MACRON, 'na8_mac', BOT_TILDE, 'na8_tilde')
-lig_single('낫', BOT_DOT, 'na9_top')
-lig_single('낭', BOT_DOT, 'na10_top')
+lig_single('낫', BOT_DOT, 'na9_bot')
+lig_single('낭', BOT_DOT, 'na10_bot')
 lig_single('낭', BOT_TRI, 'na11_tri')
-lig_single('냐', BOT_DOT, 'na12_top')
-lig_combo2('냐', BOT_DOT, 'na13_top', MACRON, 'na13_mac')
+lig_single('냐', BOT_DOT, 'na12_bot')
+lig_combo2('냐', BOT_DOT, 'na13_bot', MACRON, 'na13_mac')
 lig_single('냣', BOT_TILDE, 'na14_tilde')
 lig_single('냥', BOT_TILDE, 'na15_tilde')
-lig_combo2('누', BOT_DOT, 'na16_top', MACRON, 'na16_mac')
-lig_single('니', BOT_DOT, 'na17_top')
-lig_single('네', BOT_DOT, 'na18_top')         # 18번 아랫점으로 변경
+lig_combo2('누', BOT_DOT, 'na16_bot', MACRON, 'na16_mac')
+lig_single('니', BOT_DOT, 'na17_bot')
+lig_single('네', BOT_DOT, 'na18_bot')         # 18번 아랫점으로 변경
 
 tag = os.environ.get('OC_BUILD_TAG', 'base')
 font.fontname=f'PaliHangulV289Ga10Editor_{tag}'
