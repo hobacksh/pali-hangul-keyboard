@@ -14,6 +14,7 @@ BOT_TILDE = 0x0330    # 아랫물결
 BOT_TRI = 0x02D1      # 아랫 역삼각형
 DOUBLE = 0x02BA       # 자음중복
 CARON = 0x030C        # 캐론
+YA = 0x0346           # 야(꺽쇠)
 TOP_TILDE = 0x0303    # 윗물결
 
 with open(PARAMS_PATH, 'r', encoding='utf-8') as f:
@@ -47,7 +48,7 @@ if BOT_TRI not in font:
 
 
 # ensure marks from Nanum when missing
-for code in (DOUBLE, CARON, TOP_TILDE):
+for code in (DOUBLE, CARON, YA, TOP_TILDE):
     if code not in font:
         try:
             nf = fontforge.open(os.path.expanduser('~/Library/Fonts/NanumMyeongjo-Regular.ttf'))
@@ -243,9 +244,9 @@ lig_single('왕', BOT_TRI, 'a13_tri')
 lig_single('웃', BOT_DOT, 'a14_bot')
 lig_combo2('웃', CARON, 'a15_caron', BOT_DOT, 'a15_bot')
 lig_single('윈', BOT_TILDE, 'a16_tilde')
-lig_single('이', DOUBLE, 'a17_double')
-lig_single('잉', DOUBLE, 'a18_double')
-lig_combo2('잇', DOUBLE, 'a19_double', BOT_DOT, 'a19_bot')
+lig_single('이', YA, 'a17_ya')
+lig_single('잉', YA, 'a18_ya')
+lig_combo2('잇', YA, 'a19_ya', BOT_DOT, 'a19_bot')
 lig_single('윈', TOP, 'a20_top')
 
 # --- 자계열 ---
