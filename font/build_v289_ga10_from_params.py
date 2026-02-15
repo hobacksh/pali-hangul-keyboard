@@ -99,10 +99,9 @@ def draw_ring_abs(g, cx, cy, outer_w, outer_h):
     pen.moveTo((cx+rix,cy)); pen.curveTo((cx+rix,cy+riy*k),(cx+rix*k,cy+riy),(cx,cy+riy)); pen.curveTo((cx-rix*k,cy+riy),(cx-rix,cy+riy*k),(cx-rix,cy)); pen.curveTo((cx-rix,cy-riy*k),(cx-rix*k,cy-riy),(cx,cy-riy)); pen.curveTo((cx+rix*k,cy-riy),(cx+rix,cy-riy*k),(cx+rix,cy)); pen.closePath()
 
 def draw_mark(g, mark, pos):
-    if mark in (TOP, BOT_DOT):
-        draw_ring_abs(g, pos['x'], pos['y'], pos['width'], pos['height'])
-    else:
-        add_ref_abs(g, mark, pos['x'], pos['y'], pos['width'], pos['height'])
+    # Always use source-mark reference scaling/translation.
+    # Drawing contours with glyphPen on composite glyphs can drop base refs.
+    add_ref_abs(g, mark, pos['x'], pos['y'], pos['width'], pos['height'])
 
 def lig_single(base_char, mark, pos_key):
     if pos_key not in P: return
