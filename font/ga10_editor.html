@@ -35,6 +35,7 @@ document.head.appendChild(st);
 <div class='nav'>
   <button id='tab_ga' class='on' onclick="setGroup('ga')">가계열</button>
   <button id='tab_na' onclick="setGroup('na')">나계열</button>
+  <button id='tab_da' onclick="setGroup('da')">다계열</button>
 </div>
 <div class='msg' id='msg'>항목별 저장/반영이 가능합니다.</div>
 <div id='root'></div>
@@ -79,6 +80,31 @@ const ITEMS = {
     {key:'na16_mac', title:'16-b) 누+장음+아랫점(장음)', sample:'누̥︠'},
     {key:'na17_bot', title:'17) 니+아랫점', sample:'니̥'},
     {key:'na18_bot', title:'18) 네+아랫점', sample:'네̥'},
+  ],
+  da: [
+    {key:'da1_mac', title:'1) 다+장음', sample:'다︠'},
+    {key:'da2_top', title:'2) 다+윗점', sample:'다̊'},
+    {key:'da3_top', title:'3-a) 다+장음+윗점(윗점)', sample:'다̊︠'},
+    {key:'da3_mac', title:'3-b) 다+장음+윗점(장음)', sample:'다̊︠'},
+    {key:'da4_top', title:'4) 담+윗점', sample:'담̊'},
+    {key:'da5_top', title:'5) 닷+윗점', sample:'닷̊'},
+    {key:'da6_top', title:'6) 당+윗점', sample:'당̊'},
+    {key:'da7_top', title:'7) 도+윗점', sample:'도̊'},
+    {key:'da8_bot', title:'8) 둣+아랫점', sample:'둣̥'},
+    {key:'da9_mac', title:'9) 디+장음', sample:'디︠'},
+    {key:'da10_bot', title:'10) 디+아랫점', sample:'디̥'},
+    {key:'da11_top', title:'11) 디+윗점', sample:'디̊'},
+    {key:'da12_top', title:'12) 딕+윗점', sample:'딕̊'},
+    {key:'da13_bot', title:'13) 딧+아랫점', sample:'딧̥'},
+    {key:'da14_top', title:'14) 딩+윗점', sample:'딩̊'},
+    {key:'da15_top', title:'15) 데+윗점', sample:'데̊'},
+    {key:'da16_mac', title:'16) 따+장음', sample:'따︠'},
+    {key:'da17_bot', title:'17) 땃+아랫점', sample:'땃̥'},
+    {key:'da18_bot', title:'18) 뚯+아랫점', sample:'뚯̥'},
+    {key:'da19_mac', title:'19) 띠+장음', sample:'띠︠'},
+    {key:'da20_bot', title:'20) 띠+아랫점', sample:'띠̥'},
+    {key:'da21_bot', title:'21) 띳+아랫점', sample:'띳̥'},
+    {key:'da22_bot', title:'22) 띤+아랫점', sample:'띤̥'},
   ]
 };
 
@@ -123,6 +149,7 @@ function card(it){
 function render(){
   document.getElementById('tab_ga').classList.toggle('on', group==='ga');
   document.getElementById('tab_na').classList.toggle('on', group==='na');
+  document.getElementById('tab_da').classList.toggle('on', group==='da');
   document.getElementById('root').innerHTML = ITEMS[group].map(card).join('');
 }
 

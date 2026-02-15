@@ -202,5 +202,143 @@
     "y": 700,
     "width": 140,
     "height": 140
+  },
+  "da1_mac": {
+    "x": 270,
+    "y": 750,
+    "width": 320,
+    "height": 90
+  },
+  "da2_top": {
+    "x": 400,
+    "y": 730,
+    "width": 140,
+    "height": 140
+  },
+  "da3_top": {
+    "x": 400,
+    "y": 730,
+    "width": 140,
+    "height": 140
+  },
+  "da3_mac": {
+    "x": 270,
+    "y": 750,
+    "width": 320,
+    "height": 90
+  },
+  "da4_top": {
+    "x": 400,
+    "y": 730,
+    "width": 140,
+    "height": 140
+  },
+  "da5_top": {
+    "x": 400,
+    "y": 730,
+    "width": 140,
+    "height": 140
+  },
+  "da6_top": {
+    "x": 400,
+    "y": 730,
+    "width": 140,
+    "height": 140
+  },
+  "da7_top": {
+    "x": 400,
+    "y": 730,
+    "width": 140,
+    "height": 140
+  },
+  "da8_bot": {
+    "x": 170,
+    "y": 700,
+    "width": 140,
+    "height": 140
+  },
+  "da9_mac": {
+    "x": 270,
+    "y": 750,
+    "width": 320,
+    "height": 90
+  },
+  "da10_bot": {
+    "x": 170,
+    "y": 700,
+    "width": 140,
+    "height": 140
+  },
+  "da11_top": {
+    "x": 400,
+    "y": 730,
+    "width": 140,
+    "height": 140
+  },
+  "da12_top": {
+    "x": 400,
+    "y": 730,
+    "width": 140,
+    "height": 140
+  },
+  "da13_bot": {
+    "x": 170,
+    "y": 700,
+    "width": 140,
+    "height": 140
+  },
+  "da14_top": {
+    "x": 400,
+    "y": 730,
+    "width": 140,
+    "height": 140
+  },
+  "da15_top": {
+    "x": 400,
+    "y": 730,
+    "width": 140,
+    "height": 140
+  },
+  "da16_mac": {
+    "x": 270,
+    "y": 750,
+    "width": 320,
+    "height": 90
+  },
+  "da17_bot": {
+    "x": 170,
+    "y": 700,
+    "width": 140,
+    "height": 140
+  },
+  "da18_bot": {
+    "x": 170,
+    "y": 700,
+    "width": 140,
+    "height": 140
+  },
+  "da19_mac": {
+    "x": 270,
+    "y": 750,
+    "width": 320,
+    "height": 90
+  },
+  "da20_bot": {
+    "x": 170,
+    "y": 700,
+    "width": 140,
+    "height": 140
+  },
+  "da21_bot": {
+    "x": 170,
+    "y": 700,
+    "width": 140,
+    "height": 140
+  },
+  "da22_bot": {
+    "x": 170,
+    "y": 700,
+    "width": 140,
+    "height": 140
   }
 }

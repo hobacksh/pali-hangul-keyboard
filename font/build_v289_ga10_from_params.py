@@ -12,6 +12,8 @@ TOP = 0x030A          # 윗점
 BOT_DOT = 0x0325      # 아랫점
 BOT_TILDE = 0x0330    # 아랫물결
 BOT_TRI = 0x02D1      # 아랫 역삼각형
+DOUBLE = 0x02BA       # 자음중복
+CARON = 0x030C        # 캐론
 
 with open(PARAMS_PATH, 'r', encoding='utf-8') as f:
     P = json.load(f)
@@ -138,6 +140,30 @@ lig_single('냥', BOT_TILDE, 'na15_tilde')
 lig_combo2('누', BOT_DOT, 'na16_bot', MACRON, 'na16_mac')
 lig_single('니', BOT_DOT, 'na17_bot')
 lig_single('네', BOT_DOT, 'na18_bot')         # 18번 아랫점으로 변경
+
+# --- 다계열 ---
+lig_single('다', MACRON, 'da1_mac')
+lig_single('다', TOP, 'da2_top')
+lig_combo2('다', TOP, 'da3_top', MACRON, 'da3_mac')
+lig_single('담', TOP, 'da4_top')
+lig_single('닷', TOP, 'da5_top')
+lig_single('당', TOP, 'da6_top')
+lig_single('도', TOP, 'da7_top')
+lig_single('둣', BOT_DOT, 'da8_bot')
+lig_single('디', MACRON, 'da9_mac')
+lig_single('디', BOT_DOT, 'da10_bot')
+lig_single('디', TOP, 'da11_top')
+lig_single('딕', TOP, 'da12_top')
+lig_single('딧', BOT_DOT, 'da13_bot')
+lig_single('딩', TOP, 'da14_top')
+lig_single('데', TOP, 'da15_top')
+lig_single('따', MACRON, 'da16_mac')
+lig_single('땃', BOT_DOT, 'da17_bot')
+lig_single('뚯', BOT_DOT, 'da18_bot')
+lig_single('띠', MACRON, 'da19_mac')
+lig_single('띠', BOT_DOT, 'da20_bot')
+lig_single('띳', BOT_DOT, 'da21_bot')
+lig_single('띤', BOT_DOT, 'da22_bot')
 
 tag = os.environ.get('OC_BUILD_TAG', 'base')
 font.fontname=f'PaliHangulV289Ga10Editor_{tag}'
