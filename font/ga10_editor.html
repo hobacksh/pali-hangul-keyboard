@@ -36,6 +36,7 @@ document.head.appendChild(st);
   <button onclick="applyAll()">전체 저장 + 폰트 반영</button>
 </div>
 <div class='nav'>
+  <button id='tab_all' onclick="setGroup('all')">전체</button>
   <button id='tab_ga' class='on' onclick="setGroup('ga')">가계열</button>
   <button id='tab_na'  onclick="setGroup('na')">나계열</button>
   <button id='tab_da'  onclick="setGroup('da')">다계열</button>
@@ -333,6 +334,7 @@ function card(it){
   </div>`;
 }
 function render(){
+  document.getElementById('tab_all').classList.toggle('on', group==='all');
   document.getElementById('tab_ga').classList.toggle('on', group==='ga');
   document.getElementById('tab_na').classList.toggle('on', group==='na');
   document.getElementById('tab_da').classList.toggle('on', group==='da');
@@ -353,7 +355,8 @@ function render(){
     if(el) el.classList.toggle('on', view===v.key);
   });
 
-  const filtered = filterItemsByView(ITEMS[group]);
+  const sourceItems = (group==='all') ? allItems() : ITEMS[group];
+  const filtered = filterItemsByView(sourceItems);
   document.getElementById('root').innerHTML = filtered.map(card).join('');
 }
 function setGroup(g){ group=g; render(); }
