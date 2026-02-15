@@ -7,6 +7,9 @@
   .nav{display:flex;gap:8px;margin-bottom:10px;flex-wrap:wrap}
   .nav button{padding:7px 10px;font-size:12px}
   .nav .on{background:#111;color:#fff;border-color:#111}
+  .subnav{display:flex;gap:6px;margin:-2px 0 10px 0;flex-wrap:wrap}
+  .subnav button{padding:5px 8px;font-size:11px}
+  .subnav .on{background:#2b6cb0;color:#fff;border-color:#2b6cb0}
   .msg{font-size:12px;color:#444;margin-bottom:10px}
   #root{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:start;width:100%}
   .card{background:#fff;border:1px solid #ddd;border-radius:8px;padding:12px;width:100%;max-width:100%;min-width:0;overflow:hidden}
@@ -48,6 +51,7 @@ document.head.appendChild(st);
   <button id='tab_pa'  onclick="setGroup('pa')">파계열</button>
   <button id='tab_ha'  onclick="setGroup('ha')">하계열</button>
 </div>
+<div class='subnav' id='viewNav'></div>
 <div class='msg' id='msg'>항목별 저장/반영이 가능합니다.</div>
 <div id='root'></div>
 </div>
@@ -237,6 +241,69 @@ const ITEMS = {
 
 let state = {};
 let group = 'ga';
+let view = 'all';
+
+const VIEW_DEFS = [
+  {key:'all', label:'전체', sig:null},
+  {key:'mac', label:'글자+장음', sig:['mac']},
+  {key:'top', label:'글자+윗점', sig:['top']},
+  {key:'bot', label:'글자+아랫점', sig:['bot']},
+  {key:'tilde', label:'글자+아랫물결', sig:['tilde']},
+  {key:'tilde_top', label:'글자+윗물결', sig:['tilde_top']},
+  {key:'tri', label:'글자+역삼각형', sig:['tri']},
+  {key:'double', label:'글자+자음중복', sig:['double']},
+  {key:'caron', label:'글자+캐론', sig:['caron']},
+  {key:'ya', label:'글자+야', sig:['ya']},
+  {key:'mac_top', label:'글자+장음+윗점', sig:['mac','top']},
+  {key:'mac_bot', label:'글자+장음+아랫점', sig:['mac','bot']},
+  {key:'mac_tilde', label:'글자+장음+아랫물결', sig:['mac','tilde']},
+  {key:'mac_double', label:'글자+장음+자음중복', sig:['mac','double']},
+  {key:'top_tilde', label:'글자+윗점+아랫물결', sig:['top','tilde']},
+  {key:'bot_tilde', label:'글자+아랫점+아랫물결', sig:['bot','tilde']},
+  {key:'bot_caron', label:'글자+캐론+아랫점', sig:['bot','caron']},
+  {key:'bot_ya', label:'글자+야+아랫점', sig:['bot','ya']},
+];
+const MARK_ORDER = ['mac','top','bot','tilde','tilde_top','tri','double','caron','ya'];
+
+
+function normalizeSig(marks){
+  const uniq = [...new Set(marks)];
+  uniq.sort((a,b)=>MARK_ORDER.indexOf(a)-MARK_ORDER.indexOf(b));
+  return uniq.join('+');
+}
+function keyToMarkType(key){
+  if(key.endsWith('_tilde_top')) return 'tilde_top';
+  const s = key.split('_').pop();
+  if(['mac','top','bot','tilde','tri','double','caron','ya'].includes(s)) return s;
+  return null;
+}
+function stemKey(key){ return key.replace(/_(mac|top|bot|tilde|tri|double|caron|ya|tilde_top)$/,''); }
+function comboSigMap(items){
+  const byStem = {};
+  items.forEach(it=>{
+    const st = stemKey(it.key);
+    const mt = keyToMarkType(it.key);
+    if(!mt) return;
+    byStem[st] = byStem[st] || [];
+    byStem[st].push(mt);
+  });
+  const out = {};
+  Object.keys(byStem).forEach(st=> out[st] = normalizeSig(byStem[st]));
+  return out;
+}
+function buildViewNav(){
+  const nav = document.getElementById('viewNav');
+  nav.innerHTML = VIEW_DEFS.map(v=>`<button id='view_${v.key}' onclick="setView('${v.key}')">${v.label}</button>`).join('');
+}
+function filterItemsByView(items){
+  if(view==='all') return items;
+  const vd = VIEW_DEFS.find(v=>v.key===view);
+  if(!vd || !vd.sig) return items;
+  const target = normalizeSig(vd.sig);
+  const sigs = comboSigMap(items);
+  return items.filter(it => sigs[stemKey(it.key)] === target);
+}
+function setView(v){ view = v; render(); }
 
 function allItems(){ return Object.values(ITEMS).flat(); }
 function sourceOptions(targetKey){
@@ -280,7 +347,14 @@ function render(){
   document.getElementById('tab_ta').classList.toggle('on', group==='ta');
   document.getElementById('tab_pa').classList.toggle('on', group==='pa');
   document.getElementById('tab_ha').classList.toggle('on', group==='ha');
-  document.getElementById('root').innerHTML = ITEMS[group].map(card).join('');
+
+  VIEW_DEFS.forEach(v=>{
+    const el = document.getElementById('view_'+v.key);
+    if(el) el.classList.toggle('on', view===v.key);
+  });
+
+  const filtered = filterItemsByView(ITEMS[group]);
+  document.getElementById('root').innerHTML = filtered.map(card).join('');
 }
 function setGroup(g){ group=g; render(); }
 function readOne(key){
@@ -322,7 +396,7 @@ async function applyAll(){
   document.getElementById('msg').textContent=j.ok?'전체 폰트 반영 완료':'전체 반영 실패';
   if(j.ok) location.href='./editor?t='+Date.now();
 }
-async function init(){ const r=await fetch('/params'); state=await r.json(); render(); }
+async function init(){ const r=await fetch('/params'); state=await r.json(); buildViewNav(); render(); }
 init();
 </script>
 </body></html>
