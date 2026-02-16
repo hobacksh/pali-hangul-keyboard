@@ -789,21 +789,33 @@ function openPreviewPage(){
     return `<section class='pv-section'><h3>${GROUP_LABEL[g]||g}</h3><div class='pv-grid'>${items}</div></section>`;
   }).join('');
 
-  const html = `<!doctype html><html><head><meta charset='utf-8'><title>미리보기</title>
+  const html = `<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>미리보기</title>
   <style>
     @font-face{font-family:PH;src:url('/font.otf?t=${Date.now()}') format('opentype')}
-    body{font-family:sans-serif;margin:18px}
-    h2{margin:0 0 8px}
+    :root{--card-gap:10px;--sample-size:64px}
+    body{font-family:sans-serif;margin:14px;background:#fff;color:#111}
+    h2{margin:0 0 8px;font-size:20px}
     .desc{font-size:12px;color:#555;margin-bottom:12px}
     .pv-section{border-top:2px solid #ddd;padding-top:10px;margin-top:14px}
-    .pv-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
-    .pv-card{border:1px solid #ddd;border-radius:8px;padding:10px;background:#fff}
-    .pv-sample{font-family:PH,serif;font-size:64px;line-height:1.1;text-align:center}
-    .pv-meta{font-size:12px;text-align:center;color:#333;margin-top:6px}
+    .pv-section h3{margin:0 0 8px;font-size:16px}
+    .pv-grid{display:grid;grid-template-columns:1fr;gap:var(--card-gap)}
+    .pv-card{border:1px solid #ddd;border-radius:10px;padding:10px 10px 12px;background:#fff}
+    .pv-sample{font-family:PH,serif;font-size:var(--sample-size);line-height:1.12;text-align:center}
+    .pv-meta{font-size:12px;text-align:center;color:#333;margin-top:6px;word-break:keep-all}
+    @media (min-width:720px){
+      .pv-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
+    }
     @media print{
-      body{margin:10mm}
-      .pv-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
-      .pv-card{break-inside:avoid}
+      @page{size:A4 portrait;margin:9mm}
+      body{margin:0}
+      h2{font-size:16px}
+      .desc{font-size:10px}
+      .pv-section{margin-top:8px;padding-top:6px}
+      .pv-section h3{font-size:13px}
+      .pv-grid{grid-template-columns:1fr;gap:6px}
+      .pv-card{break-inside:avoid;page-break-inside:avoid;padding:7px;border-radius:6px}
+      .pv-sample{font-size:48px;line-height:1.08}
+      .pv-meta{font-size:10px}
     }
   </style></head><body>
   <h2>빠알리 한글 카드 미리보기</h2>
