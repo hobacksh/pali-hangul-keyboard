@@ -34,7 +34,7 @@
   .coord-plane{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:1px dashed #eee}
   .zoom-glyph{position:absolute;left:0;bottom:0;font-family:PH,serif;line-height:1;user-select:none}
   .cross{position:absolute;transform:translate(-50%,-50%);pointer-events:none;display:none}
-  .cross.mark{color:#d00}
+  .cross.mark{color:#d00;display:flex;align-items:center;justify-content:center;line-height:1;text-shadow:0 0 1px #fff,0 0 2px #fff;overflow:visible}
   .modal-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
   .coord{font-size:12px;color:#333}
   .modal2{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:10000}
@@ -465,16 +465,20 @@ function onSampleLeave(key){
   if(el) el.textContent = 'hover x: -, y: -';
 }
 
-const UPM = 1000;
-const PICK_SCALE = 0.30; // 1 font-unit = 0.30 px in picker
+const X_MIN = -200, X_MAX = 1200;
+const Y_MIN = -300, Y_MAX = 1300;
+const PICK_SCALE = 0.28; // 1 font-unit = 0.28 px in picker
 function snap(n){ const s=Number(document.getElementById('snapSel')?.value||1); return Math.round(n/s)*s; }
 function setupCoordPlane(){
   const plane=document.getElementById('coordPlane');
   const glyph=document.getElementById('zoomGlyph');
-  const px = UPM * PICK_SCALE;
-  plane.style.width = `${px}px`;
-  plane.style.height = `${px}px`;
-  glyph.style.fontSize = `${px}px`;
+  const wPx = (X_MAX - X_MIN) * PICK_SCALE;
+  const hPx = (Y_MAX - Y_MIN) * PICK_SCALE;
+  plane.style.width = `${wPx}px`;
+  plane.style.height = `${hPx}px`;
+  glyph.style.fontSize = `${1000 * PICK_SCALE}px`;
+  glyph.style.left = `${(-X_MIN) * PICK_SCALE}px`;
+  glyph.style.bottom = `${(-Y_MIN) * PICK_SCALE}px`;
 }
 function openPicker(key){
   picker={open:true,key,x: Number(document.getElementById(key+'_x').value||0), y:Number(document.getElementById(key+'_y').value||0), w:Number(document.getElementById(key+'_w').value||140), h:Number(document.getElementById(key+'_h').value||140), cx:Number(document.getElementById(key+'_x').value||0), cy:Number(document.getElementById(key+'_y').value||0), cw:Number(document.getElementById(key+'_w').value||140), ch:Number(document.getElementById(key+'_h').value||140)};
@@ -489,36 +493,6 @@ function openPicker(key){
 }
 function closePicker(){ picker.open=false; document.getElementById('pickModal').classList.remove('open'); }
 function closePickerByBackdrop(evt){ if(evt.target.id==='pickModal') closePicker(); }
-function markerSvg(mt, wPx, hPx){
-  const w = Math.max(8, wPx), h = Math.max(8, hPx);
-  const sw = Math.max(1.5, Math.min(w,h)*0.08);
-  if(mt==='mac'){
-    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><line x1='0' y1='${h/2}' x2='${w}' y2='${h/2}' stroke='currentColor' stroke-width='${sw*1.6}' stroke-linecap='round'/></svg>`;
-  }
-  if(mt==='top' || mt==='bot'){
-    const rx=w*0.48, ry=h*0.48;
-    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><ellipse cx='${w/2}' cy='${h/2}' rx='${rx}' ry='${ry}' fill='none' stroke='currentColor' stroke-width='${sw}'/></svg>`;
-  }
-  if(mt==='tilde' || mt==='tilde_top'){
-    const y=h*0.55;
-    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><path d='M0 ${y} C ${w*0.2} ${y-h*0.45}, ${w*0.3} ${y+h*0.45}, ${w*0.5} ${y} C ${w*0.7} ${y-h*0.45}, ${w*0.8} ${y+h*0.45}, ${w} ${y}' fill='none' stroke='currentColor' stroke-width='${sw*1.4}' stroke-linecap='round'/></svg>`;
-  }
-  if(mt==='tri'){
-    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><polygon points='0,0 ${w},0 ${w/2},${h}' fill='currentColor'/></svg>`;
-  }
-  if(mt==='double'){
-    const qh=h*0.85;
-    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><path d='M${w*0.25},${h} L${w*0.45},${h-qh}' stroke='currentColor' stroke-width='${sw*1.6}'/><path d='M${w*0.55},${h} L${w*0.75},${h-qh}' stroke='currentColor' stroke-width='${sw*1.6}'/></svg>`;
-  }
-  if(mt==='caron'){
-    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><polyline points='${w*0.05},${h*0.25} ${w*0.5},${h*0.85} ${w*0.95},${h*0.25}' fill='none' stroke='currentColor' stroke-width='${sw*1.4}' stroke-linecap='round' stroke-linejoin='round'/></svg>`;
-  }
-  if(mt==='ya'){
-    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><polyline points='${w*0.15},${h*0.2} ${w*0.5},${h*0.8} ${w*0.85},${h*0.2}' fill='none' stroke='currentColor' stroke-width='${sw*1.2}'/><polyline points='${w*0.15},${h*0.55} ${w*0.5},${h*0.15} ${w*0.85},${h*0.55}' fill='none' stroke='currentColor' stroke-width='${sw*1.2}'/></svg>`;
-  }
-  return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><circle cx='${w/2}' cy='${h/2}' r='${Math.min(w,h)*0.35}' fill='currentColor'/></svg>`;
-}
-
 function updatePickerMarker(){
   const plane = document.getElementById('coordPlane');
   const cross=document.getElementById('pickCross');
@@ -526,14 +500,18 @@ function updatePickerMarker(){
   const w = Number(picker.w || 140);
   const h = Number(picker.h || 140);
   const mt = keyToMarkType(picker.key);
-  const wPx = w * PICK_SCALE;
-  const hPx = h * PICK_SCALE;
-  cross.innerHTML = markerSvg(mt, wPx, hPx);
+  const ch = (MARK_CHAR[mt] || '●');
+  const wPx = Math.max(4, w * PICK_SCALE);
+  const hPx = Math.max(4, h * PICK_SCALE);
+  const fs = Math.max(10, hPx);
+  cross.textContent = ch;
+  cross.style.fontFamily = 'PH, serif';
+  cross.style.fontSize = `${fs}px`;
   cross.style.width = `${wPx}px`;
   cross.style.height = `${hPx}px`;
-  cross.style.left = `${picker.x * PICK_SCALE}px`;
-  cross.style.top = `${plane.clientHeight - (picker.y * PICK_SCALE)}px`;
-  cross.style.display = 'block';
+  cross.style.left = `${(picker.x - X_MIN) * PICK_SCALE}px`;
+  cross.style.top = `${(Y_MAX - picker.y) * PICK_SCALE}px`;
+  cross.style.display = 'flex';
 }
 
 function onPickSizeChange(){
@@ -556,10 +534,10 @@ function onPickerClick(evt){
   if(!picker.open) return;
   const plane=document.getElementById('coordPlane');
   const r=plane.getBoundingClientRect();
-  let x=snap((evt.clientX-r.left)/PICK_SCALE);
-  let y=snap((r.bottom-evt.clientY)/PICK_SCALE);
-  x=Math.max(0,Math.min(UPM,x));
-  y=Math.max(0,Math.min(UPM,y));
+  let x=snap(X_MIN + (evt.clientX-r.left)/PICK_SCALE);
+  let y=snap(Y_MAX - (evt.clientY-r.top)/PICK_SCALE);
+  x=Math.max(X_MIN,Math.min(X_MAX,x));
+  y=Math.max(Y_MIN,Math.min(Y_MAX,y));
   picker.x=x; picker.y=y;
   updatePickerUI();
 }
