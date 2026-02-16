@@ -32,7 +32,8 @@
   .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
   .zoom-wrap{position:relative;border:1px solid #ddd;background:#fff;height:360px;display:flex;align-items:center;justify-content:center;overflow:hidden}
   .zoom-glyph{font-family:PH,serif;font-size:260px;line-height:1;user-select:none}
-  .cross{position:absolute;width:14px;height:14px;border-radius:999px;background:#d00;transform:translate(-50%,-50%);pointer-events:none;border:2px solid #fff;box-shadow:0 0 0 1px #900}
+  .cross{position:absolute;transform:translate(-50%,-50%);pointer-events:none;display:none}
+  .cross.mark{font-family:PH,serif;line-height:1;color:#d00;text-shadow:0 0 1px #fff,0 0 2px #fff}
   .modal-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
   .coord{font-size:12px;color:#333}
   .modal2{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:10000}
@@ -123,7 +124,7 @@ document.head.appendChild(st);
     </div>
     <div class='zoom-wrap' id='zoomWrap' onmousemove='onPickerMove(event)' onclick='onPickerClick(event)'>
       <div class='zoom-glyph' id='zoomGlyph'></div>
-      <div class='cross' id='pickCross' style='display:none'></div>
+      <div class='cross mark' id='pickCross'></div>
     </div>
     <div class='modal-tools'>
       <span class='coord' id='pickCoord'>x: -, y: -</span>
@@ -482,11 +483,31 @@ function openPicker(key){
 }
 function closePicker(){ picker.open=false; document.getElementById('pickModal').classList.remove('open'); }
 function closePickerByBackdrop(evt){ if(evt.target.id==='pickModal') closePicker(); }
+function updatePickerMarker(){
+  const wrap = document.getElementById('zoomWrap');
+  const cross=document.getElementById('pickCross');
+  if(!wrap || !cross || !picker.key) return;
+  const w = Number(document.getElementById(picker.key+'_w')?.value || 140);
+  const h = Number(document.getElementById(picker.key+'_h')?.value || 140);
+  const mt = keyToMarkType(picker.key);
+  const ch = (MARK_CHAR[mt] || '●');
+  const scaleX = h > 0 ? Math.max(0.25, w / h) : 1;
+  cross.textContent = ch;
+  cross.style.fontSize = `${Math.max(18, h)}px`;
+  cross.style.transform = `translate(-50%,-50%) scaleX(${scaleX.toFixed(3)})`;
+  cross.style.left = `${picker.x}px`;
+  cross.style.top = `${wrap.clientHeight-picker.y}px`;
+  cross.style.display = 'block';
+}
 function updatePickerUI(){
   const c=document.getElementById('pickCoord');
   if(c) c.textContent = `x: ${Math.round(picker.x)}, y: ${Math.round(picker.y)}`;
+  updatePickerMarker();
 }
 function onPickerMove(evt){
+  // 임시 좌표값은 클릭/방향키로만 변경 (hover 이동으로는 변경하지 않음)
+}
+function onPickerClick(evt){
   if(!picker.open) return;
   const r=evt.currentTarget.getBoundingClientRect();
   let x=snap(evt.clientX-r.left);
@@ -495,14 +516,6 @@ function onPickerMove(evt){
   y=Math.max(0,Math.min(r.height,y));
   picker.x=x; picker.y=y;
   updatePickerUI();
-}
-function onPickerClick(evt){
-  onPickerMove(evt);
-  const r=evt.currentTarget.getBoundingClientRect();
-  const cross=document.getElementById('pickCross');
-  cross.style.display='block';
-  cross.style.left = `${picker.x}px`;
-  cross.style.top = `${r.height-picker.y}px`;
 }
 function applyPickedToInputs(){
   if(!picker.key) return;
