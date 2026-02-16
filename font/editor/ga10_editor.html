@@ -361,11 +361,10 @@ function card(it){
 function onSampleMove(evt,key){
   const r = evt.currentTarget.getBoundingClientRect();
   const x = evt.clientX - r.left;
-  const yTop = evt.clientY - r.top;
-  const yBottom = r.bottom - evt.clientY;
-  hoverPos[key] = {x, yTop, yBottom};
+  const y = r.bottom - evt.clientY;
+  hoverPos[key] = {x, y};
   const el = document.getElementById(key+'_hover');
-  if(el) el.textContent = `hover x:${x.toFixed(1)}px, y(top):${yTop.toFixed(1)}px, y(bottom):${yBottom.toFixed(1)}px`;
+  if(el) el.textContent = `hover x:${x.toFixed(1)}px, y:${y.toFixed(1)}px`;
 }
 function onSampleLeave(key){
   const el = document.getElementById(key+'_hover');
@@ -378,9 +377,9 @@ function applyHoverToInputs(key){
     return;
   }
   document.getElementById(key+'_x').value = Math.round(h.x);
-  document.getElementById(key+'_y').value = Math.round(h.yBottom);
+  document.getElementById(key+'_y').value = Math.round(h.y);
   state[key] = readOne(key);
-  document.getElementById('msg').textContent = `${key}에 hover 좌표 적용됨 (x=${Math.round(h.x)}, y=${Math.round(h.yBottom)})`;
+  document.getElementById('msg').textContent = `${key}에 hover 좌표 적용됨 (x=${Math.round(h.x)}, y=${Math.round(h.y)})`;
 }
 
 function render(){
