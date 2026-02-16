@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 import json, os, subprocess
+from datetime import datetime
 from http.server import ThreadingHTTPServer, SimpleHTTPRequestHandler
 from urllib.parse import urlsplit
 
@@ -9,6 +10,41 @@ PARAMS = os.path.join(ROOT, 'ga10_editor_params.json')
 BUILD = os.path.join(FONT_ROOT, 'build', 'build_v289_ga10_from_params.py')
 FONT_OUT = os.path.expanduser('~/Library/Fonts/PaliHangulV289_Ga10Editor.otf')
 FONT_COPY = os.path.join(FONT_ROOT, 'output', 'PaliHangulV289_Ga10Editor.otf')
+
+
+
+def _load_params():
+    with open(PARAMS,'r',encoding='utf-8') as f:
+        return json.load(f)
+
+def _save_params(p):
+    with open(PARAMS,'w',encoding='utf-8') as f:
+        json.dump(p,f,ensure_ascii=False,indent=2)
+
+def _ensure_meta(p):
+    m = p.get('__meta') if isinstance(p,dict) else None
+    today = datetime.now().strftime('%Y%m%d')
+    if not isinstance(m,dict):
+        m = {'date': today, 'seq': 0}
+        p['__meta'] = m
+    if m.get('date') != today:
+        m['date'] = today
+        m['seq'] = 0
+    try:
+        m['seq'] = int(m.get('seq',0))
+    except Exception:
+        m['seq'] = 0
+    return p
+
+def _bump_preset(p):
+    p = _ensure_meta(p)
+    p['__meta']['seq'] += 1
+    return p
+
+def _preset_label(p):
+    p = _ensure_meta(p)
+    m = p['__meta']
+    return f"preset-{m['date']}-{int(m['seq']):03d}"
 
 class H(SimpleHTTPRequestHandler):
     def _json(self, obj, code=200):
@@ -21,7 +57,8 @@ class H(SimpleHTTPRequestHandler):
             self.path='/ga10_editor.html'
             return super().do_GET()
         if path=='/params':
-            with open(PARAMS,'r',encoding='utf-8') as f: p=json.load(f)
+            p=_ensure_meta(_load_params())
+            _save_params(p)
             return self._json(p)
         if path in ('/font.otf','/PaliHangulV289_Ga10Editor.otf'):
             try:
@@ -40,21 +77,24 @@ class H(SimpleHTTPRequestHandler):
         if self.path=='/save':
             n=int(self.headers.get('Content-Length','0')); data=self.rfile.read(n)
             try:
-                p=json.loads(data.decode('utf-8'))
-                with open(PARAMS,'w',encoding='utf-8') as f: json.dump(p,f,ensure_ascii=False,indent=2)
-                return self._json({'ok':True})
+                p=_ensure_meta(json.loads(data.decode('utf-8')))
+                _save_params(p)
+                return self._json({'ok':True,'preset':_preset_label(p)})
             except Exception as e:
                 return self._json({'ok':False,'error':str(e)},500)
         if self.path=='/apply':
             try:
+                p=_bump_preset(_load_params())
+                _save_params(p)
+                preset=_preset_label(p)
                 env = os.environ.copy()
                 env['OC_BUILD_TAG'] = str(int(__import__('time').time()))
                 r=subprocess.run(['python3',BUILD],cwd=ROOT,capture_output=True,text=True,timeout=180,env=env)
                 if r.returncode!=0:
-                    return self._json({'ok':False,'error':r.stderr[-1200:],'out':r.stdout[-400:]},500)
+                    return self._json({'ok':False,'error':r.stderr[-1200:],'out':r.stdout[-400:],'preset':preset},500)
                 if os.path.exists(FONT_OUT):
                     subprocess.run(['cp',FONT_OUT,FONT_COPY],check=False)
-                return self._json({'ok':True,'out':r.stdout[-400:]})
+                return self._json({'ok':True,'out':r.stdout[-400:],'preset':preset})
             except Exception as e:
                 return self._json({'ok':False,'error':str(e)},500)
         return self._json({'ok':False,'error':'not found'},404)

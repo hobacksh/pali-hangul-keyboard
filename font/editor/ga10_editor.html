@@ -10,6 +10,8 @@
   .subnav{display:flex;gap:6px;margin:-2px 0 10px 0;flex-wrap:wrap}
   .subnav button{padding:5px 8px;font-size:11px}
   .subnav .on{background:#2b6cb0;color:#fff;border-color:#2b6cb0}
+  .meta-row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap}
+  .preset{font-size:12px;color:#222;background:#fff;border:1px solid #ddd;border-radius:999px;padding:4px 10px}
   .msg{font-size:12px;color:#444;margin-bottom:10px}
   #root{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:start;width:100%}
   .card{background:#fff;border:1px solid #ddd;border-radius:8px;padding:12px;width:100%;max-width:100%;min-width:0;overflow:hidden}
@@ -53,7 +55,10 @@ document.head.appendChild(st);
   <button id='tab_ha'  onclick="setGroup('ha')">하계열</button>
 </div>
 <div class='subnav' id='viewNav'></div>
-<div class='msg' id='msg'>항목별 저장/반영이 가능합니다.</div>
+<div class='meta-row'>
+  <div class='preset' id='presetBadge'>preset-00000000-000</div>
+  <div class='msg' id='msg'>항목별 저장/반영이 가능합니다.</div>
+</div>
 <div id='root'></div>
 </div>
 
@@ -306,6 +311,19 @@ function filterItemsByView(items){
 }
 function setView(v){ view = v; render(); }
 
+
+function currentPresetLabel(){
+  const m = state && state.__meta ? state.__meta : null;
+  if(!m) return 'preset-00000000-000';
+  const date = (m.date || '00000000').toString();
+  const seq = String(parseInt(m.seq || 0,10)).padStart(3,'0');
+  return `preset-${date}-${seq}`;
+}
+function refreshPresetBadge(){
+  const el=document.getElementById('presetBadge');
+  if(el) el.textContent = currentPresetLabel();
+}
+
 function allItems(){ return Object.values(ITEMS).flat(); }
 function sourceOptions(targetKey){
   return allItems().filter(it => it.key !== targetKey)
@@ -358,6 +376,7 @@ function render(){
   const sourceItems = (group==='all') ? allItems() : ITEMS[group];
   const filtered = filterItemsByView(sourceItems);
   document.getElementById('root').innerHTML = filtered.map(card).join('');
+  refreshPresetBadge();
 }
 function setGroup(g){ group=g; render(); }
 function readOne(key){
