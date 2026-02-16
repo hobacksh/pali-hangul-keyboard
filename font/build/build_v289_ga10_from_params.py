@@ -6,7 +6,7 @@ ROOT = os.path.dirname(__file__)
 FONT_ROOT = os.path.dirname(ROOT)
 PARAMS_PATH = os.path.join(FONT_ROOT, 'editor', 'ga10_editor_params.json')
 SRC = os.path.expanduser('~/Library/Fonts/PaliHangulV275.otf')
-OUT = os.path.expanduser('~/Library/Fonts/PaliHangulV289_Ga10Editor.otf')
+OUT = os.path.expanduser('~/Library/Fonts/KoreanPali-v2.90.otf')
 
 MACRON = 0xFE20
 TOP = 0x030A          # 윗점
@@ -325,9 +325,9 @@ lig_single('하', MACRON, 'ha3_mac')
 apply_custom_cards(P.get('__cards_custom'))
 
 tag = os.environ.get('OC_BUILD_TAG', 'base')
-font.fontname=f'PaliHangulV289Ga10Editor_{tag}'
-font.familyname=f'PaliHangul V289 Ga10 Editor {tag}'
-font.fullname=f'PaliHangul V289 Ga10 Editor {tag}'
+font.fontname=f'KoreanPaliV290_{tag}'
+font.familyname=f'KoreanPali v2.90 {tag}'
+font.fullname=f'KoreanPali v2.90 {tag}'
 font.version=f'2.89-ga10-editor-{tag}'
 font.generate(OUT)
 font.close()

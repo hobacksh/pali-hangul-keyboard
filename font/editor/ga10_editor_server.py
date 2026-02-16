@@ -8,8 +8,8 @@ ROOT = os.path.dirname(__file__)
 FONT_ROOT = os.path.dirname(ROOT)
 PARAMS = os.path.join(ROOT, 'ga10_editor_params.json')
 BUILD = os.path.join(FONT_ROOT, 'build', 'build_v289_ga10_from_params.py')
-FONT_OUT = os.path.expanduser('~/Library/Fonts/PaliHangulV289_Ga10Editor.otf')
-FONT_COPY = os.path.join(FONT_ROOT, 'output', 'PaliHangulV289_Ga10Editor.otf')
+FONT_OUT = os.path.expanduser('~/Library/Fonts/KoreanPali-v2.90.otf')
+FONT_COPY = os.path.join(FONT_ROOT, 'output', 'KoreanPali-v2.90.otf')
 
 
 
