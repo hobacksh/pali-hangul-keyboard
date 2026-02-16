@@ -556,8 +556,9 @@ async function applyPickedAndSave(){
 }
 function nudge(dx,dy){
   if(!picker.open) return;
-  picker.x = Math.max(0, picker.x + dx);
-  picker.y = Math.max(0, picker.y + dy);
+  const step = Number(document.getElementById('snapSel')?.value || 1);
+  picker.x = Math.max(X_MIN, Math.min(X_MAX, picker.x + (dx * step)));
+  picker.y = Math.max(Y_MIN, Math.min(Y_MAX, picker.y + (dy * step)));
   updatePickerUI();
 }
 window.addEventListener('keydown',(e)=>{
