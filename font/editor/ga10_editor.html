@@ -14,7 +14,8 @@
   .preset{font-size:12px;color:#222;background:#fff;border:1px solid #ddd;border-radius:999px;padding:4px 10px}
   .msg{font-size:12px;color:#444;margin-bottom:10px}
   #root{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;align-items:start;width:100%}
-  .card{background:#fff;border:1px solid #ddd;border-radius:8px;padding:12px;width:100%;max-width:100%;min-width:0;overflow:hidden}
+  .card{position:relative;background:#fff;border:1px solid #ddd;border-radius:8px;padding:12px;width:100%;max-width:100%;min-width:0;overflow:hidden}
+  .pending-badge{position:absolute;left:8px;top:8px;background:#facc15;color:#111;font-size:11px;font-weight:700;padding:2px 6px;border-radius:999px;border:1px solid #eab308}
   .sample{font-family:PH,serif;font-size:72px;line-height:1.1;text-align:center;margin:2px 0 10px 0}
   .meta{font-size:13px;color:#333;font-weight:600;text-align:center;margin-bottom:6px}
   .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
@@ -328,6 +329,8 @@ const ITEMS = {
 };
 
 let state = {};
+let appliedState = {};
+let pendingKeys = new Set();
 let group = 'ga';
 let view = 'all';
 let picker = {open:false,key:null,x:0,y:0,w:140,h:140,cx:0,cy:0,cw:140,ch:140};
@@ -424,10 +427,27 @@ function sourceOptions(targetKey){
     .map(it => `<option value="${it.key}">${it.title} (${it.key})</option>`)
     .join('');
 }
+function sameVal(a,b){
+  if(!a||!b) return false;
+  return Number(a.x)===Number(b.x) && Number(a.y)===Number(b.y) && Number(a.width)===Number(b.width) && Number(a.height)===Number(b.height);
+}
+function isPendingKey(key){ return pendingKeys.has(key); }
+function updateCardPendingUI(key){
+  const cardEl=document.getElementById('card_'+key);
+  if(!cardEl) return;
+  const old=cardEl.querySelector('.pending-badge');
+  if(old) old.remove();
+  if(isPendingKey(key)) cardEl.insertAdjacentHTML('afterbegin',"<div class='pending-badge'>변경대기</div>");
+}
+function updateAllPendingBadges(){
+  Object.values(ITEMS).flat().forEach(it=>updateCardPendingUI(it.key));
+}
 function card(it){
   const v = state[it.key] || {x:0,y:0,width:100,height:100};
+  const pending = isPendingKey(it.key) ? "<div class='pending-badge'>변경대기</div>" : '';
   return `
   <div class='card' id='card_${it.key}'>
+    ${pending}
     <div class='sample'>${it.sample}</div>
     <div class='meta'>${it.title} (${it.key})</div>
     <div class='grid'>
@@ -698,7 +718,9 @@ async function createCardFromModal(){
   state.__cards_custom = state.__cards_custom || [];
   state.__cards_custom.push({group:g,stem,base,marks,keys});
 
-  await saveAll(collectAll());
+  const payload = collectAll();
+  await saveAll(payload);
+  refreshPendingByApplied(payload);
   closeAddCardModal();
   group=g; view='all';
   render();
@@ -744,6 +766,16 @@ function collectAll(){
   });
   return p;
 }
+function refreshPendingByApplied(payload){
+  Object.values(ITEMS).flat().forEach(it=>{
+    const k=it.key;
+    const now = payload[k] || state[k];
+    const base = appliedState[k];
+    if(now && base && !sameVal(now, base)) pendingKeys.add(k);
+    else if(now && !base) pendingKeys.add(k);
+    else pendingKeys.delete(k);
+  });
+}
 async function saveAll(payload){
   const r=await fetch('/save',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
   return await r.json();
@@ -757,23 +789,45 @@ function copyFromSelected(targetKey){
   state[targetKey]={x:v.x,y:v.y,width:v.width,height:v.height};
   document.getElementById('msg').textContent=`${targetKey} <= ${srcKey} 값 불러옴 (저장해야 반영)`;
 }
-async function saveOne(key){ state[key]=readOne(key); const j=await saveAll(collectAll()); document.getElementById('msg').textContent=j.ok?`${key} 저장됨`:`저장 실패: ${key}`; }
+async function saveOne(key){
+  state[key]=readOne(key);
+  const payload=collectAll();
+  const j=await saveAll(payload);
+  if(j.ok){
+    refreshPendingByApplied(payload);
+    updateCardPendingUI(key);
+  }
+  document.getElementById('msg').textContent=j.ok?`${key} 저장됨`:`저장 실패: ${key}`;
+}
 async function applyOne(key){
   state[key]=readOne(key); document.getElementById('msg').textContent=`${key} 반영중...`;
-  const s=await saveAll(collectAll()); if(!s.ok){document.getElementById('msg').textContent='저장 실패';return;}
+  const payload=collectAll();
+  const s=await saveAll(payload); if(!s.ok){document.getElementById('msg').textContent='저장 실패';return;}
   const r=await fetch('/apply',{method:'POST'}); const j=await r.json();
+  if(j.ok){
+    appliedState = JSON.parse(JSON.stringify(payload));
+    pendingKeys.clear();
+  }
   document.getElementById('msg').textContent=j.ok?`${key} 폰트 반영 완료`:`반영 실패: ${key}`;
   if(j.ok) location.href='./editor?t='+Date.now();
 }
 async function applyAll(){
-  document.getElementById('msg').textContent='전체 반영중...'; const s=await saveAll(collectAll());
+  document.getElementById('msg').textContent='전체 반영중...';
+  const payload=collectAll();
+  const s=await saveAll(payload);
   if(!s.ok){document.getElementById('msg').textContent='전체 저장 실패';return;}
   const r=await fetch('/apply',{method:'POST'}); const j=await r.json();
+  if(j.ok){
+    appliedState = JSON.parse(JSON.stringify(payload));
+    pendingKeys.clear();
+  }
   document.getElementById('msg').textContent=j.ok?'전체 폰트 반영 완료':'전체 반영 실패';
   if(j.ok) location.href='./editor?t='+Date.now();
 }
 async function init(){
   const r=await fetch('/params'); state=await r.json();
+  appliedState = JSON.parse(JSON.stringify(state));
+  pendingKeys.clear();
   document.getElementById('add_base').addEventListener('input', refreshAddPreviewGlyph);
   if(Array.isArray(state.__cards_custom)){
     state.__cards_custom.forEach(c=>{
