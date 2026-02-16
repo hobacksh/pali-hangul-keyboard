@@ -503,7 +503,8 @@ function updatePickerMarker(){
   const ch = (MARK_CHAR[mt] || '●');
   const wPx = Math.max(4, w * PICK_SCALE);
   const hPx = Math.max(4, h * PICK_SCALE);
-  const fs = Math.max(10, hPx);
+  const VIS = {mac:2.6, top:1.7, bot:1.7, tilde:1.8, tilde_top:1.8, tri:1.4, double:1.9, caron:1.9, ya:1.9};
+  const fs = Math.max(10, hPx * (VIS[mt] || 1.8));
   cross.textContent = ch;
   cross.style.fontFamily = 'PH, serif';
   cross.style.fontSize = `${fs}px`;
