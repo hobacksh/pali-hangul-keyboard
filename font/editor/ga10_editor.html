@@ -130,7 +130,8 @@ document.head.appendChild(st);
       </div>
     </div>
     <div class='modal-tools'>
-      <span class='coord' id='pickCoord'>x: -, y: -</span>
+      <span class='coord' id='pickCurrent'>현재값 x:-, y:-, w:-, h:-</span>
+      <span class='coord' id='pickDraft'>변경값 x:-, y:-, w:-, h:-</span>
       <label>w</label><input id='pickW' style='width:72px' type='number' oninput='onPickSizeChange()'>
       <label>h</label><input id='pickH' style='width:72px' type='number' oninput='onPickSizeChange()'>
       <label>스냅</label>
@@ -331,7 +332,7 @@ let state = {};
 let group = 'ga';
 let view = 'all';
 const hoverPos = {};
-let picker = {open:false,key:null,x:0,y:0,w:140,h:140};
+let picker = {open:false,key:null,x:0,y:0,w:140,h:140,cx:0,cy:0,cw:140,ch:140};
 let addDraft = {x:null,y:null};
 
 const VIEW_DEFS = [
@@ -476,7 +477,7 @@ function setupCoordPlane(){
   glyph.style.fontSize = `${px}px`;
 }
 function openPicker(key){
-  picker={open:true,key,x: Number(document.getElementById(key+'_x').value||0), y:Number(document.getElementById(key+'_y').value||0), w:Number(document.getElementById(key+'_w').value||140), h:Number(document.getElementById(key+'_h').value||140)};
+  picker={open:true,key,x: Number(document.getElementById(key+'_x').value||0), y:Number(document.getElementById(key+'_y').value||0), w:Number(document.getElementById(key+'_w').value||140), h:Number(document.getElementById(key+'_h').value||140), cx:Number(document.getElementById(key+'_x').value||0), cy:Number(document.getElementById(key+'_y').value||0), cw:Number(document.getElementById(key+'_w').value||140), ch:Number(document.getElementById(key+'_h').value||140)};
   const it = allItems().find(v=>v.key===key);
   document.getElementById('pickTitle').textContent = `정밀 편집: ${it?it.title:key} (${key})`;
   document.getElementById('zoomGlyph').textContent = it?it.sample:'';
@@ -542,20 +543,14 @@ function onPickSizeChange(){
 }
 
 function updatePickerUI(){
-  const c=document.getElementById('pickCoord');
-  if(c) c.textContent = `x: ${Math.round(picker.x)}, y: ${Math.round(picker.y)}`;
+  const c0=document.getElementById('pickCurrent');
+  if(c0) c0.textContent = `현재값 x:${Math.round(picker.cx)}, y:${Math.round(picker.cy)}, w:${Math.round(picker.cw)}, h:${Math.round(picker.ch)}`;
+  const c1=document.getElementById('pickDraft');
+  if(c1) c1.textContent = `변경값 x:${Math.round(picker.x)}, y:${Math.round(picker.y)}, w:${Math.round(picker.w)}, h:${Math.round(picker.h)}`;
   updatePickerMarker();
 }
 function onPickerMove(evt){
-  if(!picker.open) return;
-  const plane=document.getElementById('coordPlane');
-  const r=plane.getBoundingClientRect();
-  let x=(evt.clientX-r.left)/PICK_SCALE;
-  let y=(r.bottom-evt.clientY)/PICK_SCALE;
-  x=Math.max(0,Math.min(UPM,x));
-  y=Math.max(0,Math.min(UPM,y));
-  const c=document.getElementById('pickCoord');
-  if(c) c.textContent = `x: ${Math.round(x)}, y: ${Math.round(y)}`;
+  // hover로는 임시값을 절대 바꾸지 않음
 }
 function onPickerClick(evt){
   if(!picker.open) return;
