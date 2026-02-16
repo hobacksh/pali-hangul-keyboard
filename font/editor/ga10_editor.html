@@ -34,7 +34,7 @@
   .coord-plane{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:1px dashed #eee}
   .zoom-glyph{position:absolute;left:0;bottom:0;font-family:PH,serif;line-height:1;user-select:none}
   .cross{position:absolute;transform:translate(-50%,-50%);pointer-events:none;display:none}
-  .cross.mark{font-family:PH,serif;line-height:1;color:#d00;text-shadow:0 0 1px #fff,0 0 2px #fff}
+  .cross.mark{color:#d00}
   .modal-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
   .coord{font-size:12px;color:#333}
   .modal2{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:10000}
@@ -488,6 +488,36 @@ function openPicker(key){
 }
 function closePicker(){ picker.open=false; document.getElementById('pickModal').classList.remove('open'); }
 function closePickerByBackdrop(evt){ if(evt.target.id==='pickModal') closePicker(); }
+function markerSvg(mt, wPx, hPx){
+  const w = Math.max(8, wPx), h = Math.max(8, hPx);
+  const sw = Math.max(1.5, Math.min(w,h)*0.08);
+  if(mt==='mac'){
+    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><line x1='0' y1='${h/2}' x2='${w}' y2='${h/2}' stroke='currentColor' stroke-width='${sw*1.6}' stroke-linecap='round'/></svg>`;
+  }
+  if(mt==='top' || mt==='bot'){
+    const rx=w*0.48, ry=h*0.48;
+    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><ellipse cx='${w/2}' cy='${h/2}' rx='${rx}' ry='${ry}' fill='none' stroke='currentColor' stroke-width='${sw}'/></svg>`;
+  }
+  if(mt==='tilde' || mt==='tilde_top'){
+    const y=h*0.55;
+    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><path d='M0 ${y} C ${w*0.2} ${y-h*0.45}, ${w*0.3} ${y+h*0.45}, ${w*0.5} ${y} C ${w*0.7} ${y-h*0.45}, ${w*0.8} ${y+h*0.45}, ${w} ${y}' fill='none' stroke='currentColor' stroke-width='${sw*1.4}' stroke-linecap='round'/></svg>`;
+  }
+  if(mt==='tri'){
+    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><polygon points='0,0 ${w},0 ${w/2},${h}' fill='currentColor'/></svg>`;
+  }
+  if(mt==='double'){
+    const qh=h*0.85;
+    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><path d='M${w*0.25},${h} L${w*0.45},${h-qh}' stroke='currentColor' stroke-width='${sw*1.6}'/><path d='M${w*0.55},${h} L${w*0.75},${h-qh}' stroke='currentColor' stroke-width='${sw*1.6}'/></svg>`;
+  }
+  if(mt==='caron'){
+    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><polyline points='${w*0.05},${h*0.25} ${w*0.5},${h*0.85} ${w*0.95},${h*0.25}' fill='none' stroke='currentColor' stroke-width='${sw*1.4}' stroke-linecap='round' stroke-linejoin='round'/></svg>`;
+  }
+  if(mt==='ya'){
+    return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><polyline points='${w*0.15},${h*0.2} ${w*0.5},${h*0.8} ${w*0.85},${h*0.2}' fill='none' stroke='currentColor' stroke-width='${sw*1.2}'/><polyline points='${w*0.15},${h*0.55} ${w*0.5},${h*0.15} ${w*0.85},${h*0.55}' fill='none' stroke='currentColor' stroke-width='${sw*1.2}'/></svg>`;
+  }
+  return `<svg width='${w}' height='${h}' viewBox='0 0 ${w} ${h}'><circle cx='${w/2}' cy='${h/2}' r='${Math.min(w,h)*0.35}' fill='currentColor'/></svg>`;
+}
+
 function updatePickerMarker(){
   const plane = document.getElementById('coordPlane');
   const cross=document.getElementById('pickCross');
@@ -495,11 +525,11 @@ function updatePickerMarker(){
   const w = Number(picker.w || 140);
   const h = Number(picker.h || 140);
   const mt = keyToMarkType(picker.key);
-  const ch = (MARK_CHAR[mt] || '●');
-  const scaleX = h > 0 ? (w / h) : 1;
-  cross.textContent = ch;
-  cross.style.fontSize = `${Math.max(10, h * PICK_SCALE)}px`;
-  cross.style.transform = `translate(-50%,-50%) scaleX(${scaleX.toFixed(3)})`;
+  const wPx = w * PICK_SCALE;
+  const hPx = h * PICK_SCALE;
+  cross.innerHTML = markerSvg(mt, wPx, hPx);
+  cross.style.width = `${wPx}px`;
+  cross.style.height = `${hPx}px`;
   cross.style.left = `${picker.x * PICK_SCALE}px`;
   cross.style.top = `${plane.clientHeight - (picker.y * PICK_SCALE)}px`;
   cross.style.display = 'block';
