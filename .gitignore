@@ -38,6 +38,10 @@ $RECYCLE.BIN/
 build/
 dist/
 
+# keep font build scripts versioned
+!font/build/
+!font/build/*.py
+
 # Font Development
 *.vfb
 *.sfd.bak
