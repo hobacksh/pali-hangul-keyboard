@@ -23,6 +23,7 @@
   input{width:100%;padding:5px 6px;font-size:12px}
   .copy{display:flex;gap:6px;justify-content:center;align-items:center;margin-bottom:6px;flex-wrap:wrap}
   .copy select{max-width:320px;padding:5px;font-size:12px}
+  .orig{font-size:11px;color:#8a6d00;text-align:center;margin:4px 0 8px 0;display:none}
   .hover-actions{display:flex;justify-content:center;margin-bottom:8px}
   .btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
   button{padding:6px 10px;font-size:12px}
@@ -432,12 +433,35 @@ function sameVal(a,b){
   return Number(a.x)===Number(b.x) && Number(a.y)===Number(b.y) && Number(a.width)===Number(b.width) && Number(a.height)===Number(b.height);
 }
 function isPendingKey(key){ return pendingKeys.has(key); }
+function currentValForKey(key){
+  const ex=document.getElementById(key+'_x');
+  if(ex) return readOne(key);
+  return state[key] || null;
+}
 function updateCardPendingUI(key){
   const cardEl=document.getElementById('card_'+key);
   if(!cardEl) return;
   const old=cardEl.querySelector('.pending-badge');
   if(old) old.remove();
+
+  const cur = currentValForKey(key);
+  const base = appliedState[key] || null;
+  const changed = !!(cur && (!base || !sameVal(cur,base)));
+  if(changed) pendingKeys.add(key); else pendingKeys.delete(key);
+
   if(isPendingKey(key)) cardEl.insertAdjacentHTML('afterbegin',"<div class='pending-badge'>변경대기</div>");
+
+  const origEl=document.getElementById(key+'_orig');
+  if(origEl){
+    if(changed){
+      origEl.style.display='block';
+      if(base) origEl.textContent=`원래값 x:${base.x}, y:${base.y}, w:${base.width}, h:${base.height}`;
+      else origEl.textContent='원래값 없음(신규 카드)';
+    }else{
+      origEl.style.display='none';
+      origEl.textContent='';
+    }
+  }
 }
 function updateAllPendingBadges(){
   Object.values(ITEMS).flat().forEach(it=>updateCardPendingUI(it.key));
@@ -459,7 +483,9 @@ function card(it){
     <div class='copy'>
       <select id='${it.key}_src'><option value=''>다른 항목 값 불러오기…</option>${sourceOptions(it.key)}</select>
       <button onclick="copyFromSelected('${it.key}')">값 불러오기</button>
+      <button onclick="restoreOriginal('${it.key}')">원래 값으로</button>
     </div>
+    <div class='orig' id='${it.key}_orig'></div>
     <div class='hover-actions'>
       <button onclick="openPicker('${it.key}')">정밀 편집</button>
     </div>
@@ -579,6 +605,7 @@ function applyPickedToInputs(){
   document.getElementById(picker.key+'_w').value = Math.round(picker.w);
   document.getElementById(picker.key+'_h').value = Math.round(picker.h);
   state[picker.key] = readOne(picker.key);
+  updateCardPendingUI(picker.key);
   document.getElementById('msg').textContent = `${picker.key} 정밀값 적용 (x=${Math.round(picker.x)}, y=${Math.round(picker.y)}, w=${Math.round(picker.w)}, h=${Math.round(picker.h)})`;
 }
 async function applyPickedAndSave(){
@@ -752,6 +779,13 @@ function render(){
   const sourceItems = (group==='all') ? allItems() : ITEMS[group];
   const filtered = filterItemsByView(sourceItems);
   document.getElementById('root').innerHTML = filtered.map(card).join('');
+  filtered.forEach(it=>{
+    ['x','y','w','h'].forEach(s=>{
+      const el=document.getElementById(it.key+'_'+s);
+      if(el) el.addEventListener('input',()=>updateCardPendingUI(it.key));
+    });
+    updateCardPendingUI(it.key);
+  });
   refreshPresetBadge();
 }
 function setGroup(g){ group=g; render(); }
@@ -787,7 +821,22 @@ function copyFromSelected(targetKey){
   document.getElementById(targetKey+'_x').value=v.x; document.getElementById(targetKey+'_y').value=v.y;
   document.getElementById(targetKey+'_w').value=v.width; document.getElementById(targetKey+'_h').value=v.height;
   state[targetKey]={x:v.x,y:v.y,width:v.width,height:v.height};
+  updateCardPendingUI(targetKey);
   document.getElementById('msg').textContent=`${targetKey} <= ${srcKey} 값 불러옴 (저장해야 반영)`;
+}
+function restoreOriginal(key){
+  const v=appliedState[key];
+  if(!v){
+    document.getElementById('msg').textContent=`${key} 원래값이 없어요.`;
+    return;
+  }
+  document.getElementById(key+'_x').value=v.x;
+  document.getElementById(key+'_y').value=v.y;
+  document.getElementById(key+'_w').value=v.width;
+  document.getElementById(key+'_h').value=v.height;
+  state[key]={x:v.x,y:v.y,width:v.width,height:v.height};
+  updateCardPendingUI(key);
+  document.getElementById('msg').textContent=`${key} 원래값으로 되돌림 (저장해야 반영)`;
 }
 async function saveOne(key){
   state[key]=readOne(key);
