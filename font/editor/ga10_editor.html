@@ -34,7 +34,7 @@
   .coord-plane{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);border:1px dashed #eee}
   .zoom-glyph{position:absolute;left:0;bottom:0;font-family:PH,serif;line-height:1;user-select:none}
   .cross{position:absolute;transform:translate(-50%,-50%);pointer-events:none;display:none}
-  .cross.mark{color:#d00;display:flex;align-items:center;justify-content:center;line-height:1;text-shadow:0 0 1px #fff,0 0 2px #fff;overflow:visible}
+  .cross.mark{color:#d00;line-height:1;overflow:visible}
   .modal-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
   .coord{font-size:12px;color:#333}
   .modal2{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:10000}
@@ -493,6 +493,33 @@ function openPicker(key){
 }
 function closePicker(){ picker.open=false; document.getElementById('pickModal').classList.remove('open'); }
 function closePickerByBackdrop(evt){ if(evt.target.id==='pickModal') closePicker(); }
+function drawMarkerOnCanvas(ch, wPx, hPx){
+  const base = 200;
+  const mCanvas = document.createElement('canvas');
+  const mCtx = mCanvas.getContext('2d');
+  mCtx.font = `${base}px PH`;
+  const mt = mCtx.measureText(ch);
+  const mw = Math.max(1, (mt.actualBoundingBoxLeft||0) + (mt.actualBoundingBoxRight||0));
+  const mh = Math.max(1, (mt.actualBoundingBoxAscent||0) + (mt.actualBoundingBoxDescent||0));
+  const sx = Math.max(0.05, wPx / mw);
+  const sy = Math.max(0.05, hPx / mh);
+
+  const canvas = document.createElement('canvas');
+  canvas.width = Math.max(2, Math.ceil(wPx)+6);
+  canvas.height = Math.max(2, Math.ceil(hPx)+6);
+  const ctx = canvas.getContext('2d');
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  ctx.translate(3,3);
+  ctx.scale(sx, sy);
+  ctx.font = `${base}px PH`;
+  ctx.fillStyle = '#d00';
+  ctx.textBaseline = 'alphabetic';
+  const x = (mt.actualBoundingBoxLeft||0);
+  const y = (mt.actualBoundingBoxAscent||0);
+  ctx.fillText(ch, x, y);
+  return canvas;
+}
+
 function updatePickerMarker(){
   const plane = document.getElementById('coordPlane');
   const cross=document.getElementById('pickCross');
@@ -503,16 +530,14 @@ function updatePickerMarker(){
   const ch = (MARK_CHAR[mt] || '●');
   const wPx = Math.max(4, w * PICK_SCALE);
   const hPx = Math.max(4, h * PICK_SCALE);
-  const VIS = {mac:2.6, top:1.7, bot:1.7, tilde:1.8, tilde_top:1.8, tri:1.4, double:1.9, caron:1.9, ya:1.9};
-  const fs = Math.max(10, hPx * (VIS[mt] || 1.8));
-  cross.textContent = ch;
-  cross.style.fontFamily = 'PH, serif';
-  cross.style.fontSize = `${fs}px`;
+
+  cross.innerHTML='';
+  cross.appendChild(drawMarkerOnCanvas(ch, wPx, hPx));
   cross.style.width = `${wPx}px`;
   cross.style.height = `${hPx}px`;
   cross.style.left = `${(picker.x - X_MIN) * PICK_SCALE}px`;
   cross.style.top = `${(Y_MAX - picker.y) * PICK_SCALE}px`;
-  cross.style.display = 'flex';
+  cross.style.display = 'block';
 }
 
 function onPickSizeChange(){
