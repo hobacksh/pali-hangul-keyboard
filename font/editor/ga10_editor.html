@@ -468,6 +468,7 @@ function onSampleLeave(key){
 const X_MIN = -200, X_MAX = 1200;
 const Y_MIN = -300, Y_MAX = 1300;
 const PICK_SCALE = 0.28; // 1 font-unit = 0.28 px in picker
+const Y_VISUAL_OFFSET = 175; // picker y 보정값 (font y 기준과 화면 표시 기준 차이 보정)
 function snap(n){ const s=Number(document.getElementById('snapSel')?.value||1); return Math.round(n/s)*s; }
 function setupCoordPlane(){
   const plane=document.getElementById('coordPlane');
@@ -535,7 +536,7 @@ function updatePickerMarker(){
   cross.style.width = `${wPx}px`;
   cross.style.height = `${hPx}px`;
   cross.style.left = `${(picker.x - X_MIN) * PICK_SCALE}px`;
-  cross.style.top = `${(Y_MAX - picker.y) * PICK_SCALE}px`;
+  cross.style.top = `${(Y_MAX - (picker.y + Y_VISUAL_OFFSET)) * PICK_SCALE}px`;
   cross.style.display = 'block';
 }
 
@@ -560,7 +561,7 @@ function onPickerClick(evt){
   const plane=document.getElementById('coordPlane');
   const r=plane.getBoundingClientRect();
   let x=snap(X_MIN + (evt.clientX-r.left)/PICK_SCALE);
-  let y=snap(Y_MAX - (evt.clientY-r.top)/PICK_SCALE);
+  let y=snap(Y_MAX - (evt.clientY-r.top)/PICK_SCALE - Y_VISUAL_OFFSET);
   x=Math.max(X_MIN,Math.min(X_MAX,x));
   y=Math.max(Y_MIN,Math.min(Y_MAX,y));
   picker.x=x; picker.y=y;
