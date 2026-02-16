@@ -26,6 +26,15 @@
   .hover-actions{display:flex;justify-content:center;margin-bottom:8px}
   .btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
   button{padding:6px 10px;font-size:12px}
+  .modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:9999}
+  .modal.open{display:flex}
+  .modal-box{background:#fff;border-radius:10px;padding:12px;min-width:760px;max-width:92vw}
+  .modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;gap:8px}
+  .zoom-wrap{position:relative;border:1px solid #ddd;background:#fff;height:360px;display:flex;align-items:center;justify-content:center;overflow:hidden}
+  .zoom-glyph{font-family:PH,serif;font-size:260px;line-height:1;user-select:none}
+  .cross{position:absolute;width:14px;height:14px;border-radius:999px;background:#d00;transform:translate(-50%,-50%);pointer-events:none;border:2px solid #fff;box-shadow:0 0 0 1px #900}
+  .modal-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
+  .coord{font-size:12px;color:#333}
 </style>
 <script>
 const t = new URLSearchParams(location.search).get('t') || Date.now().toString();
@@ -62,6 +71,29 @@ document.head.appendChild(st);
   <div class='msg' id='msg'>항목별 저장/반영이 가능합니다.</div>
 </div>
 <div id='root'></div>
+</div>
+
+<div class='modal' id='pickModal' onclick='closePickerByBackdrop(event)'>
+  <div class='modal-box'>
+    <div class='modal-head'>
+      <div id='pickTitle' style='font-weight:600'>정밀 편집</div>
+      <button onclick='closePicker()'>닫기</button>
+    </div>
+    <div class='zoom-wrap' id='zoomWrap' onmousemove='onPickerMove(event)' onclick='onPickerClick(event)'>
+      <div class='zoom-glyph' id='zoomGlyph'></div>
+      <div class='cross' id='pickCross' style='display:none'></div>
+    </div>
+    <div class='modal-tools'>
+      <span class='coord' id='pickCoord'>x: -, y: -</span>
+      <label>스냅</label>
+      <select id='snapSel'>
+        <option value='1'>1px</option><option value='5'>5px</option><option value='10'>10px</option>
+      </select>
+      <button onclick='nudge(-1,0)'>←</button><button onclick='nudge(1,0)'>→</button><button onclick='nudge(0,1)'>↑</button><button onclick='nudge(0,-1)'>↓</button>
+      <button onclick='applyPickedToInputs()'>적용만</button>
+      <button onclick='applyPickedAndSave()'>적용+저장</button>
+    </div>
+  </div>
 </div>
 
 <script>
@@ -251,6 +283,7 @@ let state = {};
 let group = 'ga';
 let view = 'all';
 const hoverPos = {};
+let picker = {open:false,key:null,x:0,y:0};
 
 const VIEW_DEFS = [
   {key:'all', label:'전체', sig:null},
@@ -358,6 +391,7 @@ function card(it){
     </div>
     <div class='hover-actions'>
       <button onclick="applyHoverToInputs('${it.key}')">hover 좌표 → x/y 적용</button>
+      <button onclick="openPicker('${it.key}')">정밀 편집</button>
     </div>
     <div class='btns'>
       <button onclick="saveOne('${it.key}')">저장</button>
@@ -388,6 +422,66 @@ function applyHoverToInputs(key){
   state[key] = readOne(key);
   document.getElementById('msg').textContent = `${key}에 hover 좌표 적용됨 (x=${Math.round(h.x)}, y=${Math.round(h.y)})`;
 }
+
+
+function snap(n){ const s=Number(document.getElementById('snapSel')?.value||1); return Math.round(n/s)*s; }
+function openPicker(key){
+  picker={open:true,key,x: Number(document.getElementById(key+'_x').value||0), y:Number(document.getElementById(key+'_y').value||0)};
+  const it = allItems().find(v=>v.key===key);
+  document.getElementById('pickTitle').textContent = `정밀 편집: ${it?it.title:key} (${key})`;
+  document.getElementById('zoomGlyph').textContent = it?it.sample:'';
+  document.getElementById('pickModal').classList.add('open');
+  updatePickerUI();
+}
+function closePicker(){ picker.open=false; document.getElementById('pickModal').classList.remove('open'); }
+function closePickerByBackdrop(evt){ if(evt.target.id==='pickModal') closePicker(); }
+function updatePickerUI(){
+  const c=document.getElementById('pickCoord');
+  if(c) c.textContent = `x: ${Math.round(picker.x)}, y: ${Math.round(picker.y)}`;
+}
+function onPickerMove(evt){
+  if(!picker.open) return;
+  const r=evt.currentTarget.getBoundingClientRect();
+  let x=snap(evt.clientX-r.left);
+  let y=snap(r.bottom-evt.clientY);
+  x=Math.max(0,Math.min(r.width,x));
+  y=Math.max(0,Math.min(r.height,y));
+  picker.x=x; picker.y=y;
+  updatePickerUI();
+}
+function onPickerClick(evt){
+  onPickerMove(evt);
+  const r=evt.currentTarget.getBoundingClientRect();
+  const cross=document.getElementById('pickCross');
+  cross.style.display='block';
+  cross.style.left = `${picker.x}px`;
+  cross.style.top = `${r.height-picker.y}px`;
+}
+function applyPickedToInputs(){
+  if(!picker.key) return;
+  document.getElementById(picker.key+'_x').value = Math.round(picker.x);
+  document.getElementById(picker.key+'_y').value = Math.round(picker.y);
+  state[picker.key] = readOne(picker.key);
+  document.getElementById('msg').textContent = `${picker.key} 정밀 좌표 적용 (x=${Math.round(picker.x)}, y=${Math.round(picker.y)})`;
+}
+async function applyPickedAndSave(){
+  applyPickedToInputs();
+  await saveOne(picker.key);
+}
+function nudge(dx,dy){
+  if(!picker.open) return;
+  picker.x = Math.max(0, picker.x + dx);
+  picker.y = Math.max(0, picker.y + dy);
+  updatePickerUI();
+}
+window.addEventListener('keydown',(e)=>{
+  if(!picker.open) return;
+  if(e.key==='Escape'){ closePicker(); return; }
+  if(e.key==='ArrowLeft'){ e.preventDefault(); nudge(-1,0);}
+  if(e.key==='ArrowRight'){ e.preventDefault(); nudge(1,0);}
+  if(e.key==='ArrowUp'){ e.preventDefault(); nudge(0,1);}
+  if(e.key==='ArrowDown'){ e.preventDefault(); nudge(0,-1);}
+});
 
 function render(){
   document.getElementById('tab_all').classList.toggle('on', group==='all');
