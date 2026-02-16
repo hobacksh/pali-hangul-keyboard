@@ -93,6 +93,7 @@ document.head.appendChild(st);
 <div style='margin-bottom:8px'>
   <button onclick="applyAll()">전체 저장 + 폰트 반영</button>
   <button onclick="openAddCardModal()">카드 추가</button>
+  <button onclick="openPreviewPage()">미리보기</button>
 </div>
 <div class='nav'>
   <button id='tab_all' onclick="setGroup('all')">전체</button>
@@ -758,6 +759,64 @@ async function createCardFromModal(){
   document.getElementById('msg').textContent=`새 카드 추가됨: ${stem}`;
 }
 
+function visibleItems(){
+  const sourceItems = (group==='all') ? allItems() : ITEMS[group];
+  let filtered = filterItemsByView(sourceItems);
+  if(pendingOnly) filtered = filtered.filter(it=>isPendingKey(it.key));
+  return filtered;
+}
+
+function openPreviewPage(){
+  const filtered = visibleItems();
+  const seen = new Set();
+  const dedup = filtered.filter(it=>{
+    const st=stemKey(it.key);
+    if(seen.has(st)) return false;
+    seen.add(st);
+    return true;
+  });
+
+  const grouped = {};
+  dedup.forEach(it=>{
+    const g = it.key.match(/^([a-z]+)/)?.[1] || 'etc';
+    grouped[g] = grouped[g] || [];
+    grouped[g].push(it);
+  });
+
+  const activeGroups = (group==='all' ? GROUP_ORDER : [group]).filter(g=>grouped[g]?.length);
+  const sections = activeGroups.map(g=>{
+    const items = grouped[g].map(it=>`<div class='pv-card'><div class='pv-sample'>${it.sample}</div><div class='pv-meta'>${it.title} (${it.key})</div></div>`).join('');
+    return `<section class='pv-section'><h3>${GROUP_LABEL[g]||g}</h3><div class='pv-grid'>${items}</div></section>`;
+  }).join('');
+
+  const html = `<!doctype html><html><head><meta charset='utf-8'><title>미리보기</title>
+  <style>
+    @font-face{font-family:PH;src:url('/font.otf?t=${Date.now()}') format('opentype')}
+    body{font-family:sans-serif;margin:18px}
+    h2{margin:0 0 8px}
+    .desc{font-size:12px;color:#555;margin-bottom:12px}
+    .pv-section{border-top:2px solid #ddd;padding-top:10px;margin-top:14px}
+    .pv-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+    .pv-card{border:1px solid #ddd;border-radius:8px;padding:10px;background:#fff}
+    .pv-sample{font-family:PH,serif;font-size:64px;line-height:1.1;text-align:center}
+    .pv-meta{font-size:12px;text-align:center;color:#333;margin-top:6px}
+    @media print{
+      body{margin:10mm}
+      .pv-grid{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+      .pv-card{break-inside:avoid}
+    }
+  </style></head><body>
+  <h2>빠알리 한글 카드 미리보기</h2>
+  <div class='desc'>현재 화면 필터 기준 / 조합 a-b는 1개로 그룹화하여 표시</div>
+  ${sections || '<p>표시할 카드가 없어요.</p>'}
+  </body></html>`;
+
+  const w = window.open('', '_blank');
+  w.document.open();
+  w.document.write(html);
+  w.document.close();
+}
+
 function render(){
   document.getElementById('tab_all').classList.toggle('on', group==='all');
   document.getElementById('tab_ga').classList.toggle('on', group==='ga');
@@ -785,9 +844,7 @@ function render(){
     pbtn.textContent = pendingOnly ? `변경대기만 (${pendingKeys.size})` : '변경대기만';
   }
 
-  const sourceItems = (group==='all') ? allItems() : ITEMS[group];
-  let filtered = filterItemsByView(sourceItems);
-  if(pendingOnly) filtered = filtered.filter(it=>isPendingKey(it.key));
+  const filtered = visibleItems();
   document.getElementById('root').innerHTML = filtered.map(card).join('');
   filtered.forEach(it=>{
     ['x','y','w','h'].forEach(s=>{
