@@ -505,11 +505,10 @@ function drawMarkerOnCanvas(ch, wPx, hPx){
   const sy = Math.max(0.05, hPx / mh);
 
   const canvas = document.createElement('canvas');
-  canvas.width = Math.max(2, Math.ceil(wPx)+6);
-  canvas.height = Math.max(2, Math.ceil(hPx)+6);
+  canvas.width = Math.max(2, Math.round(wPx));
+  canvas.height = Math.max(2, Math.round(hPx));
   const ctx = canvas.getContext('2d');
   ctx.clearRect(0,0,canvas.width,canvas.height);
-  ctx.translate(3,3);
   ctx.scale(sx, sy);
   ctx.font = `${base}px PH`;
   ctx.fillStyle = '#d00';
