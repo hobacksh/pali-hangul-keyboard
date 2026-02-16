@@ -10,6 +10,7 @@
   .subnav{display:flex;gap:6px;margin:-2px 0 10px 0;flex-wrap:wrap}
   .subnav button{padding:5px 8px;font-size:11px}
   .subnav .on{background:#2b6cb0;color:#fff;border-color:#2b6cb0}
+  .subnav .on-pending{background:#b45309;color:#fff;border-color:#b45309}
   .meta-row{display:flex;gap:10px;align-items:center;justify-content:space-between;margin-bottom:8px;flex-wrap:wrap}
   .preset{font-size:12px;color:#222;background:#fff;border:1px solid #ddd;border-radius:999px;padding:4px 10px}
   .msg{font-size:12px;color:#444;margin-bottom:10px}
@@ -334,6 +335,7 @@ let appliedState = {};
 let pendingKeys = new Set();
 let group = 'ga';
 let view = 'all';
+let pendingOnly = false;
 let picker = {open:false,key:null,x:0,y:0,w:140,h:140,cx:0,cy:0,cw:140,ch:140};
 let addDraft = {x:null,y:null};
 
@@ -391,7 +393,8 @@ function comboSigMap(items){
 }
 function buildViewNav(){
   const nav = document.getElementById('viewNav');
-  nav.innerHTML = VIEW_DEFS.map(v=>`<button id='view_${v.key}' onclick="setView('${v.key}')">${v.label}</button>`).join('');
+  const viewBtns = VIEW_DEFS.map(v=>`<button id='view_${v.key}' onclick="setView('${v.key}')">${v.label}</button>`).join('');
+  nav.innerHTML = viewBtns + `<button id='view_pending' onclick='togglePendingOnly()'>변경대기만</button>`;
 }
 function filterItemsByView(items){
   if(view==='all') return items;
@@ -402,6 +405,7 @@ function filterItemsByView(items){
   return items.filter(it => sigs[stemKey(it.key)] === target);
 }
 function setView(v){ view = v; render(); }
+function togglePendingOnly(){ pendingOnly = !pendingOnly; render(); }
 
 
 function currentPresetLabel(){
@@ -775,9 +779,15 @@ function render(){
     const el = document.getElementById('view_'+v.key);
     if(el) el.classList.toggle('on', view===v.key);
   });
+  const pbtn = document.getElementById('view_pending');
+  if(pbtn){
+    pbtn.classList.toggle('on-pending', pendingOnly);
+    pbtn.textContent = pendingOnly ? `변경대기만 (${pendingKeys.size})` : '변경대기만';
+  }
 
   const sourceItems = (group==='all') ? allItems() : ITEMS[group];
-  const filtered = filterItemsByView(sourceItems);
+  let filtered = filterItemsByView(sourceItems);
+  if(pendingOnly) filtered = filtered.filter(it=>isPendingKey(it.key));
   document.getElementById('root').innerHTML = filtered.map(card).join('');
   filtered.forEach(it=>{
     ['x','y','w','h'].forEach(s=>{
