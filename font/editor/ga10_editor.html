@@ -21,8 +21,9 @@
   .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
   .k{font-size:10px;color:#666}
   input{width:100%;padding:5px 6px;font-size:12px}
-  .copy{display:flex;gap:6px;justify-content:center;align-items:center;margin-bottom:8px;flex-wrap:wrap}
+  .copy{display:flex;gap:6px;justify-content:center;align-items:center;margin-bottom:6px;flex-wrap:wrap}
   .copy select{max-width:320px;padding:5px;font-size:12px}
+  .hover-actions{display:flex;justify-content:center;margin-bottom:8px}
   .btns{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
   button{padding:6px 10px;font-size:12px}
 </style>
@@ -249,6 +250,7 @@ const ITEMS = {
 let state = {};
 let group = 'ga';
 let view = 'all';
+const hoverPos = {};
 
 const VIEW_DEFS = [
   {key:'all', label:'전체', sig:null},
@@ -347,6 +349,9 @@ function card(it){
       <select id='${it.key}_src'><option value=''>다른 항목 값 불러오기…</option>${sourceOptions(it.key)}</select>
       <button onclick="copyFromSelected('${it.key}')">값 불러오기</button>
     </div>
+    <div class='hover-actions'>
+      <button onclick="applyHoverToInputs('${it.key}')">hover 좌표 → x/y 적용</button>
+    </div>
     <div class='btns'>
       <button onclick="saveOne('${it.key}')">저장</button>
       <button onclick="applyOne('${it.key}')">저장 + 폰트 반영</button>
@@ -358,12 +363,24 @@ function onSampleMove(evt,key){
   const x = evt.clientX - r.left;
   const yTop = evt.clientY - r.top;
   const yBottom = r.bottom - evt.clientY;
+  hoverPos[key] = {x, yTop, yBottom};
   const el = document.getElementById(key+'_hover');
   if(el) el.textContent = `hover x:${x.toFixed(1)}px, y(top):${yTop.toFixed(1)}px, y(bottom):${yBottom.toFixed(1)}px`;
 }
 function onSampleLeave(key){
   const el = document.getElementById(key+'_hover');
   if(el) el.textContent = 'hover x: -, y: -';
+}
+function applyHoverToInputs(key){
+  const h = hoverPos[key];
+  if(!h){
+    document.getElementById('msg').textContent = '먼저 글자 위에 마우스를 올려 좌표를 잡아주세요.';
+    return;
+  }
+  document.getElementById(key+'_x').value = Math.round(h.x);
+  document.getElementById(key+'_y').value = Math.round(h.yBottom);
+  state[key] = readOne(key);
+  document.getElementById('msg').textContent = `${key}에 hover 좌표 적용됨 (x=${Math.round(h.x)}, y=${Math.round(h.yBottom)})`;
 }
 
 function render(){
