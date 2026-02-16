@@ -822,7 +822,13 @@ function copyFromSelected(targetKey){
   document.getElementById(targetKey+'_w').value=v.width; document.getElementById(targetKey+'_h').value=v.height;
   state[targetKey]={x:v.x,y:v.y,width:v.width,height:v.height};
   updateCardPendingUI(targetKey);
-  document.getElementById('msg').textContent=`${targetKey} <= ${srcKey} 값 불러옴 (저장해야 반영)`;
+  const cur = currentValForKey(targetKey);
+  const base = appliedState[targetKey] || null;
+  if(base && sameVal(cur, base)){
+    document.getElementById('msg').textContent=`${targetKey} <= ${srcKey} 값 불러옴 (원래값과 동일, 변경대기 없음)`;
+  }else{
+    document.getElementById('msg').textContent=`${targetKey} <= ${srcKey} 값 불러옴 (저장해야 반영)`;
+  }
 }
 function restoreOriginal(key){
   const v=appliedState[key];
