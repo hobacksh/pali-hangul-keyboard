@@ -17,7 +17,6 @@
   .card{background:#fff;border:1px solid #ddd;border-radius:8px;padding:12px;width:100%;max-width:100%;min-width:0;overflow:hidden}
   .sample{font-family:PH,serif;font-size:72px;line-height:1.1;text-align:center;margin:2px 0 10px 0}
   .meta{font-size:13px;color:#333;font-weight:600;text-align:center;margin-bottom:6px}
-  .hoverxy{font-size:11px;color:#555;text-align:center;margin-bottom:8px}
   .grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-bottom:10px}
   .k{font-size:10px;color:#666}
   input{width:100%;padding:5px 6px;font-size:12px}
@@ -331,7 +330,6 @@ const ITEMS = {
 let state = {};
 let group = 'ga';
 let view = 'all';
-const hoverPos = {};
 let picker = {open:false,key:null,x:0,y:0,w:140,h:140,cx:0,cy:0,cw:140,ch:140};
 let addDraft = {x:null,y:null};
 
@@ -430,9 +428,8 @@ function card(it){
   const v = state[it.key] || {x:0,y:0,width:100,height:100};
   return `
   <div class='card' id='card_${it.key}'>
-    <div class='sample' onmousemove="onSampleMove(event,'${it.key}')" onmouseleave="onSampleLeave('${it.key}')">${it.sample}</div>
+    <div class='sample'>${it.sample}</div>
     <div class='meta'>${it.title} (${it.key})</div>
-    <div class='hoverxy' id='${it.key}_hover'>hover x: -, y: -</div>
     <div class='grid'>
       <div><div class='k'>x</div><input id='${it.key}_x' value='${v.x}'></div>
       <div><div class='k'>y</div><input id='${it.key}_y' value='${v.y}'></div>
@@ -451,18 +448,6 @@ function card(it){
       <button onclick="applyOne('${it.key}')">저장 + 폰트 반영</button>
     </div>
   </div>`;
-}
-function onSampleMove(evt,key){
-  const r = evt.currentTarget.getBoundingClientRect();
-  const x = evt.clientX - r.left;
-  const y = r.bottom - evt.clientY;
-  hoverPos[key] = {x, y};
-  const el = document.getElementById(key+'_hover');
-  if(el) el.textContent = `hover x:${x.toFixed(1)}px, y:${y.toFixed(1)}px`;
-}
-function onSampleLeave(key){
-  const el = document.getElementById(key+'_hover');
-  if(el) el.textContent = 'hover x: -, y: -';
 }
 
 const X_MIN = -200, X_MAX = 1200;
