@@ -35,7 +35,48 @@
   .cross{position:absolute;width:14px;height:14px;border-radius:999px;background:#d00;transform:translate(-50%,-50%);pointer-events:none;border:2px solid #fff;box-shadow:0 0 0 1px #900}
   .modal-tools{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin:8px 0}
   .coord{font-size:12px;color:#333}
+  .modal2{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;align-items:center;justify-content:center;z-index:10000}
+  .modal2.open{display:flex}
+  .modal2-box{background:#fff;border-radius:10px;padding:12px;min-width:720px;max-width:94vw}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px}
+  .chips{display:flex;gap:6px;flex-wrap:wrap}
+  .chips label{font-size:12px;border:1px solid #ddd;border-radius:999px;padding:4px 8px;background:#fff}
+  .pick2{position:relative;border:1px solid #ddd;height:220px;display:flex;align-items:center;justify-content:center}
+  .pick2-glyph{font-family:PH,serif;font-size:170px;line-height:1}
+  .pick2-cross{position:absolute;width:12px;height:12px;border-radius:999px;background:#d00;transform:translate(-50%,-50%);display:none}
+
 </style>
+
+<div class='modal2' id='addCardModal' onclick='closeAddCardByBackdrop(event)'>
+  <div class='modal2-box'>
+    <div class='modal-head'>
+      <div style='font-weight:600'>카드 추가</div>
+      <button onclick='closeAddCardModal()'>닫기</button>
+    </div>
+    <div class='row'>
+      <label>계열</label>
+      <select id='add_group'></select>
+      <label>글자</label>
+      <input id='add_base' style='width:100px' placeholder='예: 다'>
+    </div>
+    <div class='row'>
+      <label>기호 (최대 2개)</label>
+      <div class='chips' id='add_marks'></div>
+    </div>
+    <div class='row'>
+      <label>기본 위치 찍기</label>
+      <span class='coord' id='add_pick_coord'>x: -, y: -</span>
+    </div>
+    <div class='pick2' id='add_pick' onmousemove='onAddPickMove(event)' onclick='onAddPickClick(event)'>
+      <div class='pick2-glyph' id='add_pick_glyph'>가</div>
+      <div class='pick2-cross' id='add_pick_cross'></div>
+    </div>
+    <div class='row' style='justify-content:flex-end;margin-top:10px'>
+      <button onclick='createCardFromModal()'>등록</button>
+    </div>
+  </div>
+</div>
+
 <script>
 const t = new URLSearchParams(location.search).get('t') || Date.now().toString();
 const st = document.createElement('style');
@@ -47,6 +88,7 @@ document.head.appendChild(st);
 <h2>빠알리 한글 폰트 편집기</h2>
 <div style='margin-bottom:8px'>
   <button onclick="applyAll()">전체 저장 + 폰트 반영</button>
+  <button onclick="openAddCardModal()">카드 추가</button>
 </div>
 <div class='nav'>
   <button id='tab_all' onclick="setGroup('all')">전체</button>
@@ -284,6 +326,7 @@ let group = 'ga';
 let view = 'all';
 const hoverPos = {};
 let picker = {open:false,key:null,x:0,y:0};
+let addDraft = {x:null,y:null};
 
 const VIEW_DEFS = [
   {key:'all', label:'전체', sig:null},
@@ -306,6 +349,10 @@ const VIEW_DEFS = [
   {key:'bot_ya', label:'글자+야+아랫점', sig:['bot','ya']},
 ];
 const MARK_ORDER = ['mac','top','bot','tilde','tilde_top','tri','double','caron','ya'];
+const GROUP_ORDER=['ga','na','da','ra','ma','ba','sa','a','ja','cha','ka','ta','pa','ha'];
+const GROUP_LABEL={ga:'가계열',na:'나계열',da:'다계열',ra:'라계열',ma:'마계열',ba:'바계열',sa:'사계열',a:'아계열',ja:'자계열',cha:'차계열',ka:'카계열',ta:'타계열',pa:'파계열',ha:'하계열'};
+const MARK_LABEL={mac:'장음',top:'윗점',bot:'아랫점',tilde:'아랫물결',tilde_top:'윗물결',tri:'역삼각형',double:'자음중복',caron:'캐론',ya:'야'};
+const MARK_CHAR={mac:'︠',top:'̊',bot:'̥',tilde:'̰',tilde_top:'̃',tri:'ˑ',double:'ʺ',caron:'̌',ya:'͆'};
 
 
 function normalizeSig(marks){
@@ -483,6 +530,130 @@ window.addEventListener('keydown',(e)=>{
   if(e.key==='ArrowDown'){ e.preventDefault(); nudge(0,-1);}
 });
 
+
+function selectedAddMarks(){
+  return Array.from(document.querySelectorAll('#add_marks input[type=checkbox]:checked')).map(x=>x.value);
+}
+function renderAddMarkOptions(){
+  const host=document.getElementById('add_marks');
+  host.innerHTML = MARK_ORDER.map(m=>`<label><input type='checkbox' value='${m}' onchange='onAddMarksChange()'> ${MARK_LABEL[m]}</label>`).join('');
+}
+function onAddMarksChange(){
+  const marks=selectedAddMarks();
+  if(marks.length>2){
+    const last=marks[marks.length-1];
+    const el=document.querySelector(`#add_marks input[value='${last}']`);
+    if(el) el.checked=false;
+    document.getElementById('msg').textContent='기호는 최대 2개까지 선택 가능해요.';
+  }
+  refreshAddPreviewGlyph();
+}
+function refreshAddPreviewGlyph(){
+  const base=(document.getElementById('add_base').value||'가').trim().slice(0,1);
+  const marks=selectedAddMarks();
+  const sig=normalizeSig(marks);
+  const arr=sig?sig.split('+'):[];
+  const sample=base + arr.map(m=>MARK_CHAR[m]||'').join('');
+  document.getElementById('add_pick_glyph').textContent = sample || base;
+}
+function openAddCardModal(){
+  const gsel=document.getElementById('add_group');
+  gsel.innerHTML = GROUP_ORDER.map(g=>`<option value='${g}' ${group===g?'selected':''}>${GROUP_LABEL[g]}</option>`).join('');
+  renderAddMarkOptions();
+  document.getElementById('add_base').value='';
+  addDraft={x:null,y:null};
+  document.getElementById('add_pick_coord').textContent='x: -, y: -';
+  document.getElementById('add_pick_cross').style.display='none';
+  refreshAddPreviewGlyph();
+  document.getElementById('addCardModal').classList.add('open');
+}
+function closeAddCardModal(){ document.getElementById('addCardModal').classList.remove('open'); }
+function closeAddCardByBackdrop(e){ if(e.target.id==='addCardModal') closeAddCardModal(); }
+function onAddPickMove(evt){
+  const r=evt.currentTarget.getBoundingClientRect();
+  const x=evt.clientX-r.left; const y=r.bottom-evt.clientY;
+  document.getElementById('add_pick_coord').textContent=`x: ${Math.round(x)}, y: ${Math.round(y)}`;
+}
+function onAddPickClick(evt){
+  const r=evt.currentTarget.getBoundingClientRect();
+  const x=evt.clientX-r.left; const y=r.bottom-evt.clientY;
+  addDraft={x:Math.round(x),y:Math.round(y)};
+  const c=document.getElementById('add_pick_cross');
+  c.style.display='block'; c.style.left=`${x}px`; c.style.top=`${r.height-y}px`;
+  document.getElementById('add_pick_coord').textContent=`x: ${addDraft.x}, y: ${addDraft.y}`;
+}
+function firstCoordsByType(mt, g){
+  const pool=(ITEMS[g]||[]);
+  const found=pool.find(it=>keyToMarkType(it.key)===mt && state[it.key]);
+  if(found) return {...state[found.key]};
+  const any=allItems().find(it=>keyToMarkType(it.key)===mt && state[it.key]);
+  if(any) return {...state[any.key]};
+  return {x:400,y:700,width:140,height:140};
+}
+function nextStemIndex(g){
+  let max=0;
+  (ITEMS[g]||[]).forEach(it=>{
+    const m=it.key.match(new RegExp(`^${g}(\d+)_`));
+    if(m) max=Math.max(max,parseInt(m[1],10));
+  });
+  return max+1;
+}
+function stemMapForGroup(g){
+  const m={};
+  (ITEMS[g]||[]).forEach(it=>{
+    const st=stemKey(it.key); const mt=keyToMarkType(it.key);
+    m[st]=m[st]||{base:(it.sample||'').slice(0,1),marks:[]};
+    if(mt && !m[st].marks.includes(mt)) m[st].marks.push(mt);
+  });
+  return m;
+}
+async function createCardFromModal(){
+  const g=document.getElementById('add_group').value;
+  const base=(document.getElementById('add_base').value||'').trim().slice(0,1);
+  const marks=normalizeSig(selectedAddMarks()).split('+').filter(Boolean);
+  if(!g||!base||marks.length===0){ alert('계열/글자/기호를 확인해 주세요.'); return; }
+  if(marks.length>2){ alert('기호는 최대 2개까지 가능합니다.'); return; }
+
+  const sig=normalizeSig(marks);
+  const stemInfo=stemMapForGroup(g);
+  const dup=Object.entries(stemInfo).find(([st,v])=> v.base===base && normalizeSig(v.marks)===sig);
+  if(dup){ alert(`이미 같은 조합이 있어요: ${dup[0]}`); return; }
+
+  const n=nextStemIndex(g);
+  const stem=`${g}${n}`;
+  const sample=base + marks.map(m=>MARK_CHAR[m]||'').join('');
+  const newItems=[]; const keys={};
+
+  function setCoord(k,mt){
+    const c=firstCoordsByType(mt,g);
+    if(addDraft.x!=null&&addDraft.y!=null){ c.x=addDraft.x; c.y=addDraft.y; }
+    state[k]=c;
+  }
+
+  if(marks.length===1){
+    const m=marks[0]; const k=`${stem}_${m}`; keys[m]=k;
+    newItems.push({key:k,title:`${n}) ${base}+${MARK_LABEL[m]}`,sample});
+    setCoord(k,m);
+  }else{
+    const [m1,m2]=marks;
+    const k1=`${stem}_${m1}`, k2=`${stem}_${m2}`;
+    keys[m1]=k1; keys[m2]=k2;
+    newItems.push({key:k1,title:`${n}-a) ${base}+${MARK_LABEL[m1]}+${MARK_LABEL[m2]}(${MARK_LABEL[m1]})`,sample});
+    newItems.push({key:k2,title:`${n}-b) ${base}+${MARK_LABEL[m1]}+${MARK_LABEL[m2]}(${MARK_LABEL[m2]})`,sample});
+    setCoord(k1,m1); setCoord(k2,m2);
+  }
+
+  ITEMS[g].push(...newItems);
+  state.__cards_custom = state.__cards_custom || [];
+  state.__cards_custom.push({group:g,stem,base,marks,keys});
+
+  await saveAll(collectAll());
+  closeAddCardModal();
+  group=g; view='all';
+  render();
+  document.getElementById('msg').textContent=`새 카드 추가됨: ${stem}`;
+}
+
 function render(){
   document.getElementById('tab_all').classList.toggle('on', group==='all');
   document.getElementById('tab_ga').classList.toggle('on', group==='ga');
@@ -550,7 +721,26 @@ async function applyAll(){
   document.getElementById('msg').textContent=j.ok?'전체 폰트 반영 완료':'전체 반영 실패';
   if(j.ok) location.href='./editor?t='+Date.now();
 }
-async function init(){ const r=await fetch('/params'); state=await r.json(); buildViewNav(); render(); }
+async function init(){
+  const r=await fetch('/params'); state=await r.json();
+  document.getElementById('add_base').addEventListener('input', refreshAddPreviewGlyph);
+  if(Array.isArray(state.__cards_custom)){
+    state.__cards_custom.forEach(c=>{
+      const g=c.group, base=c.base, marks=c.marks||[], keys=c.keys||{};
+      if(!ITEMS[g]) return;
+      const sample=base + marks.map(m=>MARK_CHAR[m]||'').join('');
+      if(marks.length===1){
+        const m=marks[0], k=keys[m];
+        if(k && !ITEMS[g].some(it=>it.key===k)) ITEMS[g].push({key:k,title:`(사용자) ${base}+${MARK_LABEL[m]}`,sample});
+      }else if(marks.length===2){
+        const [m1,m2]=marks; const k1=keys[m1],k2=keys[m2];
+        if(k1 && !ITEMS[g].some(it=>it.key===k1)) ITEMS[g].push({key:k1,title:`(사용자-a) ${base}+${MARK_LABEL[m1]}+${MARK_LABEL[m2]}(${MARK_LABEL[m1]})`,sample});
+        if(k2 && !ITEMS[g].some(it=>it.key===k2)) ITEMS[g].push({key:k2,title:`(사용자-b) ${base}+${MARK_LABEL[m1]}+${MARK_LABEL[m2]}(${MARK_LABEL[m2]})`,sample});
+      }
+    });
+  }
+  buildViewNav(); render();
+}
 init();
 </script>
 </body></html>

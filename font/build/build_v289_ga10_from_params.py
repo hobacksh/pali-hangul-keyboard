@@ -112,6 +112,46 @@ def lig_single(base_char, mark, pos_key):
     draw_mark(g, mark, P[pos_key])
     g.addPosSub(sub,(b.glyphname,font[mark].glyphname))
 
+
+
+def mark_code(mt):
+    return {
+        'mac': MACRON,
+        'top': TOP,
+        'bot': BOT_DOT,
+        'tilde': BOT_TILDE,
+        'tri': BOT_TRI,
+        'double': DOUBLE,
+        'caron': CARON,
+        'ya': YA,
+        'tilde_top': TOP_TILDE,
+    }.get(mt)
+
+def apply_custom_cards(custom_cards):
+    if not isinstance(custom_cards, list):
+        return
+    for c in custom_cards:
+        try:
+            base = c.get('base')
+            marks = c.get('marks') or []
+            keys = c.get('keys') or {}
+            if not base or not marks:
+                continue
+            if len(marks)==1:
+                m=marks[0]
+                code=mark_code(m)
+                k=keys.get(m)
+                if code and k:
+                    lig_single(base, code, k)
+            elif len(marks)==2:
+                m1,m2 = marks[0], marks[1]
+                code1, code2 = mark_code(m1), mark_code(m2)
+                k1, k2 = keys.get(m1), keys.get(m2)
+                if code1 and code2 and k1 and k2:
+                    lig_combo2(base, code1, k1, code2, k2)
+        except Exception:
+            pass
+
 def lig_combo2(base_char, markA, keyA, markB, keyB):
     if keyA not in P or keyB not in P: return
     b = font[ord(base_char)]
@@ -280,6 +320,9 @@ lig_single('폿', BOT_DOT, 'pa1_bot')
 lig_single('후', MACRON, 'ha1_mac')
 lig_single('히', MACRON, 'ha2_mac')
 lig_single('하', MACRON, 'ha3_mac')
+
+# --- 사용자 추가 카드 ---
+apply_custom_cards(P.get('__cards_custom'))
 
 tag = os.environ.get('OC_BUILD_TAG', 'base')
 font.fontname=f'PaliHangulV289Ga10Editor_{tag}'
